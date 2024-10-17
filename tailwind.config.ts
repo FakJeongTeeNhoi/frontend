@@ -14,6 +14,7 @@ const config: Config = {
       },
       boxShadow: {
         signIn: "4px 4px 4px 0 rgba(0,0,0,0.25)",
+        select: "0 1px 3px 0 rgba(166, 175, 195, 0.4)",
       },
     },
   },
