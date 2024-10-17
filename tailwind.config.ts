@@ -12,6 +12,9 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      boxShadow: {
+        signIn: "4px 4px 4px 0 rgba(0,0,0,0.25)",
+      },
     },
   },
   plugins: [],
