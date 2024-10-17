@@ -107,12 +107,12 @@ export default function SignUp() {
             <div className="flex flex-row-reverse gap-x-[4%]">
               <button
                 type="submit"
-                className=" text-white bg-blue-400 hover:bg-[#60A5FA] font-medium rounded-md h-12 p-2.5 w-44"
+                className=" text-white bg-blue-400 hover:bg-[#60A5FA] font-medium rounded-md h-12 py-3 px-7 w-44"
               >
                 Create Account
               </button>
               <button
-                className=" text-gray-400 bg-white border border-gray-400 hover:text-[#3758F9] hover:border-[#D1D5DB] font-medium rounded-md h-12 p-2.5 w-44"
+                className=" text-gray-400 bg-white border border-gray-400 hover:text-[#3758F9] hover:border-[#D1D5DB] font-medium rounded-md h-12 py-3 px-7 w-44"
                 onClick={() => {
                   window.location.href = "/user/signIn";
                 }}

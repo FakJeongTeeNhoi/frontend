@@ -66,7 +66,7 @@ export default function SignIn() {
             </div>
             <button
               type="submit"
-              className=" text-white bg-blue-400 hover:bg-[#60A5FA] font-medium rounded-md h-12 p-2.5 w-full"
+              className=" text-white bg-blue-400 hover:bg-[#60A5FA] font-medium rounded-md h-12 py-3 px-7 w-full"
             >
               Sign In
             </button>

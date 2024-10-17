@@ -14,7 +14,7 @@ export default function ResendEmailModal({ onClick }: ResendEmailModalProps) {
         </label>
       </div>
       <button
-        className="mx-auto text-white bg-blue-400 hover:bg-[#60A5FA] font-medium rounded-md h-12 p-2.5 min-w-fit"
+        className="mx-auto text-white bg-blue-400 hover:bg-[#60A5FA] font-medium rounded-md h-12 py-3 px-7 min-w-fit"
         onClick={onClick}
       >
         Resend Verification Email
