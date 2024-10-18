@@ -21,7 +21,7 @@ const TextInput: React.FC<TextProps> = ({
     <div className="gap-y-2">
       <label
         htmlFor={id} // Use the correct id for the label
-        className="block font-medium text-[#111928] dark:text-white"
+        className="block font-medium text-[#111928]"
       >
         {label}
       </label>

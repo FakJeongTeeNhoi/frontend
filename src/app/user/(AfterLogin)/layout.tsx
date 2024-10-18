@@ -15,7 +15,7 @@ export default function ({
 
   return (
     <div>
-      <nav className="bg-yellow-100 dark:bg-gray-900 w-full min-w-fit">
+      <nav className="bg-yellow-100  w-full min-w-fit">
         <div className="w-full grid grid-cols-2 items-center justify-between px-[3%] pt-3 pb-[2px] gap-5">
           <div className="flex gap-10 items-center">
             <Link href="/user/search">

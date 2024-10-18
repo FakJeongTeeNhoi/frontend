@@ -41,7 +41,7 @@ export default function accountManagement() {
   return (
     <div className="min-w-fit h-screen min-h-fit bg-blue-50 flex justify-center items-center">
       <div className="w-[45%] min-w-fit m-auto space-y-[7%]">
-        <h1 className="font-extrabold text-5xl leading-9 mt-[7%]">
+        <h1 className="font-extrabold text-gray-800 text-5xl leading-9 mt-[7%]">
           Account Management
         </h1>
 
