@@ -1,10 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
-import shapes from "../../../assets/SignIn/shapes.svg";
 import TextInput from "./components/TextInput";
-import PasswordInput from "./components/PasswordInput";
 import SelectInput from "./components/SelectInput";
 
 export default function accountManagement() {
@@ -13,8 +10,6 @@ export default function accountManagement() {
   const [email, setEmail] = useState<string>("");
   const [id, setId] = useState<string>("");
   const [faculty, setFaculty] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [rePassword, setRePassword] = useState<string>("");
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -25,8 +20,6 @@ export default function accountManagement() {
       email,
       id,
       faculty,
-      password,
-      rePassword,
       role: "user",
     };
 
