@@ -46,10 +46,7 @@ const SelectInput: React.FC<SelectProps> = ({
 
   return (
     <div className="gap-y-2">
-      <label
-        htmlFor={id}
-        className="block font-medium text-[#111928] dark:text-white"
-      >
+      <label htmlFor={id} className="block font-medium text-[#111928]">
         {label}
       </label>
       <div className="relative w-full custom-select">

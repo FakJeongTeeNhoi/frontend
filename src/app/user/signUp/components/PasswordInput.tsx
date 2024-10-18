@@ -23,10 +23,7 @@ const PasswordInput: React.FC<PasswordProps> = ({
 
   return (
     <div className="grid grid-cols-2 gap-8">
-      <label
-        htmlFor={id}
-        className="block font-medium text-[#111928] dark:text-white my-auto"
-      >
+      <label htmlFor={id} className="block font-medium text-[#111928] my-auto">
         {label}
       </label>
       <div className="relative">
@@ -41,7 +38,7 @@ const PasswordInput: React.FC<PasswordProps> = ({
         <button
           type="button"
           onClick={togglePasswordVisibility}
-          className="absolute inset-y-0 end-0 flex items-center z-20 px-3 cursor-pointer text-[#6B7280] rounded-e-md focus:outline-none focus:text-[#3758F9] dark:text-neutral-600 dark:focus:text-blue-500"
+          className="absolute inset-y-0 end-0 flex items-center z-20 px-3 cursor-pointer text-[#6B7280] rounded-e-md focus:outline-none focus:text-[#3758F9]"
         >
           {isPasswordVisible ? (
             <svg

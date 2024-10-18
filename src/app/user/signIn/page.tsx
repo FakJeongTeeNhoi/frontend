@@ -36,7 +36,7 @@ export default function SignIn() {
             <div>
               <label
                 htmlFor="email"
-                className="block mb-1 font-medium text-[#111928] dark:text-white"
+                className="block mb-1 font-medium text-[#111928]"
               >
                 Email
               </label>
@@ -52,7 +52,7 @@ export default function SignIn() {
             <div>
               <label
                 htmlFor="password"
-                className="block mb-1 font-medium text-[#111928] dark:text-white"
+                className="block mb-1 font-medium text-[#111928] "
               >
                 Password
               </label>
