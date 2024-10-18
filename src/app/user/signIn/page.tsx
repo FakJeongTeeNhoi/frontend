@@ -30,7 +30,7 @@ export default function SignIn() {
 
       <div className="relative bg-white w-[77%] min-w-fit h-[56%] min-h-fit grid grid-cols-2 items-center shadow-signIn">
         {/* Form Section */}
-        <div className="w-full flex flex-col px-[7%] py-[11%] gap-[12%]">
+        <div className="w-full flex flex-col px-[7%] py-[11%] gap-10">
           <h1 className="text-3xl font-bold text-[#212B36]">Sign In</h1>
           <form className="flex flex-col gap-5" onSubmit={onSubmit}>
             <div>

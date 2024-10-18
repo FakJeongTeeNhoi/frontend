@@ -39,7 +39,7 @@ export default function SignUp() {
   };
 
   return (
-    <div className="w-screen min-w-fit h-screen min-h-fit bg-blue-50 flex justify-center items-center">
+    <div className="min-w-fit h-screen min-h-fit bg-blue-50 flex justify-center items-center">
       <div className="w-[45%] min-w-fit m-auto space-y-[7%]">
         <h1 className="font-extrabold text-8xl">Sign up</h1>
 
