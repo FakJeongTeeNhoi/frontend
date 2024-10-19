@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 
@@ -17,7 +17,7 @@ export default function PieChart({
 
   const [options, setOptions] = useState<ApexOptions>({
     chart: {
-      width: 380,
+      width: 300,
       type: "pie",
     },
     labels: labelsList,
@@ -38,6 +38,14 @@ export default function PieChart({
       },
     ],
   });
+  
+  useEffect(() => {
+    setOptions((prevOptions) => ({
+      ...prevOptions,
+      labels: labelsList,
+    }));
+    setSeries(seriesList);
+  }, [seriesList,labelsList]);
 
   return (
     <div>

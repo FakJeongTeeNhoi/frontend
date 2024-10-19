@@ -5,10 +5,12 @@ import TypeOfUserChart from "./PieChart/PieChart";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NumberOfReservationChart from "./NumberOfReservationChart/NumberOfReservationChart";
+import { ReportService } from "@/services/ReportService";
 
 export type UserPieChartType = "User Type" | "Faculty";
+
 export default function DashboardChart() {
   const userTypeLabel = ["Student", "Professor", "Staff"];
   const userFacultyLabel = ["Engineering", "Art", "Science"];
@@ -16,11 +18,21 @@ export default function DashboardChart() {
 
   const [typeOfUserLabels, setTypeOfUserLabels] =
     useState<string[]>(userTypeLabel);
-  const [typeOfUserSeries, setTypeOfUserSeries] = useState<number[]>([
-    72, 15, 13,
-  ]);
-  const [userPieChartType, setUserPieChartType] =
-    useState<UserPieChartType>("User Type");
+  const [typeOfUserSeries, setTypeOfUserSeries] = useState<number[]>([72, 15, 13]);
+  const [userPieChartType, setUserPieChartType] = useState<UserPieChartType>("User Type");
+
+  useEffect(() => {
+    const fetchReport = async () => {
+      try{
+        const reports = await ReportService.getReport("e44a7bca-8d4f-4171-9bb2-3d803c1e72f4")
+        console.log(reports);
+      }
+      catch (err) {
+        console.log(err);
+      }
+    }
+    fetchReport();
+  }, []);
 
   const onUserPieChartSelected = (event: SelectChangeEvent) => {
     const value = event.target.value as UserPieChartType;
@@ -54,64 +66,64 @@ export default function DashboardChart() {
           />
         </div>
       </div>
+
       <div className="bg-gray-50 border-2 border-gray-300 rounded-md p-4 space-y-8">
-        <div className="flex flex-row space-x-8 w-full">
-          <div className="flex flex-col w-full p-8 space-y-4 bg-white border-gray-100 border-2 shadow-lg">
+        <div className="grid grid-cols-[70%_30%] gap-8 w-full">
+          <div className="flex flex-col w-full p-8 bg-white border-gray-100 border-2 shadow-lg">
             <div className="text-2xl font-semibold text-gray-800">
-              Number of User
+              Number of Users
             </div>
-            <NumberOfUserStackChart />
+            <div className="flex-grow">
+              <NumberOfUserStackChart />
+            </div>
           </div>
-          <div className="flex flex-col p-8 space-y-4 bg-white border-gray-100 border-2 shadow-lg">
-            <div className="flex flex-row w-full items-center justify-between">
+
+          <div className="flex flex-col w-fit p-8 bg-white border-gray-100 border-2 shadow-lg">
+            <div className="flex flex-row  items-center justify-between">
               <div className="text-2xl font-semibold text-gray-800">
                 Type of User
               </div>
 
               <FormControl sx={{ m: 1, minWidth: 80 }}>
                 <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
+                  labelId="user-pie-chart-select"
+                  id="user-pie-chart-select"
                   value={userPieChartType}
                   label="PieChartType"
                   onChange={onUserPieChartSelected}
                   displayEmpty
-                  renderValue={(selected) =>
-                    selected.length === 0 ? "Select Space" : selected
-                  }
                 >
-                  <MenuItem key={"userType"} value={"User Type"}>
-                    User Type
-                  </MenuItem>
-                  <MenuItem key={"Faculty"} value={"Faculty"}>
-                    Faculty
-                  </MenuItem>
+                  <MenuItem value={"User Type"}>User Type</MenuItem>
+                  <MenuItem value={"Faculty"}>Faculty</MenuItem>
                 </Select>
               </FormControl>
             </div>
-            <TypeOfUserChart
-              seriesList={typeOfUserSeries}
-              labelsList={typeOfUserLabels}
-            />
+            <div className="flex-grow">
+              <TypeOfUserChart seriesList={typeOfUserSeries} labelsList={typeOfUserLabels} />
+            </div>
           </div>
         </div>
-        <div className="flex flex-row space-x-8 w-full">
-          <div className="flex flex-col w-full p-8 space-y-4 bg-white border-gray-100 border-2 shadow-lg">
+
+        <div className="grid grid-cols-[70%_30%] gap-8 w-full">
+          <div className="flex flex-col w-full p-8 bg-white border-gray-100 border-2 shadow-lg">
             <div className="text-2xl font-semibold text-gray-800">
-              Number of Reservation
+              Number of Reservations
             </div>
-            <NumberOfReservationChart />
+            <div className="flex-grow">
+              <NumberOfReservationChart />
+            </div>
           </div>
-          <div className="flex flex-col p-8 space-y-4 bg-white border-gray-100 border-2 shadow-lg">
-            <div className="flex flex-row w-full items-center justify-between">
-              <div className="text-2xl font-semibold text-gray-800">
-                Most Reserved Room
-              </div>
+
+          <div className="flex flex-col w-fit p-8 bg-white border-gray-100 border-2 shadow-lg">
+            <div className="text-2xl font-semibold text-gray-800">
+              Most Reserved Room
             </div>
-            <TypeOfUserChart
-              seriesList={typeOfUserSeries}
-              labelsList={mostReserveRoomLabel}
-            />
+            <div className="flex-grow">
+              <TypeOfUserChart
+                seriesList={typeOfUserSeries}
+                labelsList={mostReserveRoomLabel}
+              />
+            </div>
           </div>
         </div>
       </div>
