@@ -2,44 +2,47 @@
 
 import { useState } from "react";
 import TextInput from "./components/TextInput";
-import PasswordInput from "./components/PasswordInput";
 import SelectInput from "./components/SelectInput";
+import { useRouter } from "next/navigation";
+import { register } from "@/api/auth";
 
 export default function SignUp() {
+  const router = useRouter();
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [id, setId] = useState<string>("");
   const [faculty, setFaculty] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [rePassword, setRePassword] = useState<string>("");
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const signUpData = {
-      firstName,
-      lastName,
       email,
-      id,
+      password: "",
+      name: `${firstName} ${lastName}`,
       faculty,
-      password,
-      rePassword,
-      role: "user",
+      type: "staff",
     };
-
     try {
-      console.log("Sign Up Data: ", signUpData);
-      window.location.href = "/user/verifyEmail";
+      const result = await register(signUpData);
+      if (result?.error) {
+        console.error(result.error);
+      } else {
+        console.log("Sign Up Data: ", signUpData);
+        router.push("/staff/verifyEmail");
+      }
     } catch (error: unknown) {
-      console.error(error);
+      console.error("Register error", error);
     }
   };
 
   return (
     <div className="min-w-fit h-screen min-h-fit bg-blue-50 flex justify-center items-center">
       <div className="w-[45%] min-w-fit m-auto space-y-[7%]">
-        <h1 className="font-extrabold text-8xl text-gray-800">Sign up</h1>
+        <h1 className="font-extrabold text-8xl text-gray-800">
+          Register Staff
+        </h1>
 
         {/* Form Section */}
         <div className="bg-gray-50 border border-gray-300 p-16 min-w-fit min-h-fit ">
@@ -76,6 +79,7 @@ export default function SignUp() {
                 placeholder="Chula ID"
                 value={id}
                 onChange={(e) => setId(e.target.value)}
+                isHidden
               />
               <SelectInput
                 id="faculty"
@@ -83,22 +87,6 @@ export default function SignUp() {
                 placeholder="Faculty"
                 value={faculty}
                 onChange={setFaculty}
-              />
-            </div>
-            <div className="grid gap-8 px-2 pb-8 pt-2 rounded-[10px] border-b-2 border-gray-300 items-center">
-              <PasswordInput
-                id="password"
-                label="Password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <PasswordInput
-                id="rePassword"
-                label="Confirm Password"
-                placeholder="Re-Password"
-                value={rePassword}
-                onChange={(e) => setRePassword(e.target.value)}
               />
             </div>
 
