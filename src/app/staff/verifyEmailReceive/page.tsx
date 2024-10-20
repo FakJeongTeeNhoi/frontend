@@ -50,7 +50,7 @@ export default function VerifyEmail() {
             <button
               className=" text-white bg-blue-400 hover:bg-[#60A5FA] font-medium rounded-md h-12 py-3 px-7 w-fit"
               onClick={() => {
-                window.location.href = "/user/signIn";
+                window.location.href = "/staff/spaceManagement";
               }}
             >
               Continue

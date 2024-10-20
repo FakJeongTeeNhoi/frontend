@@ -1,6 +1,7 @@
 import Image from "next/image";
 import DefaultButton from "../../Common/Buttons/DefaultButton";
 import AccountBox from "../AccountBox/AccountBox";
+import { signOut } from "next-auth/react";
 
 export type AdminPage = "Dashboard" | "Request" | "Space Management";
 export default function NavbarAdmin({
@@ -15,7 +16,7 @@ export default function NavbarAdmin({
   const navigationLinks = [
     { name: "Dashboard", href: "/dashboard" },
     { name: "Request", href: "/request" },
-    { name: "Space Management", href: "/space-management" },
+    { name: "Space Management", href: "/spaceManagement" },
   ];
   return (
     <>
@@ -33,7 +34,7 @@ export default function NavbarAdmin({
             {navigationLinks.map((link, index) => (
               <a
                 key={index}
-                href={`/admin/${link.href}`}
+                href={`/staff/${link.href}`}
                 className={`block mt-4 lg:inline-block lg:mt-0 ${
                   focus == link.name ? "text-gray-800" : "text-gray-400"
                 } text-xl font-semibold hover:text-gray-600 mr-4`}
@@ -48,7 +49,7 @@ export default function NavbarAdmin({
             <DefaultButton
               label="Log out"
               onClick={() => {
-                console.log("Log out");
+                signOut({ callbackUrl: "/staff/signIn" });
               }}
             />
           </div>

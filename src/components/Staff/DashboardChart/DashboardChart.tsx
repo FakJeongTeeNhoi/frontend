@@ -9,11 +9,11 @@ import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { useEffect, useState } from "react";
 import NumberOfReservationChart from "./NumberOfReservationChart/NumberOfReservationChart";
-import { ReportService } from "@/services/ReportService";
 import { DayFormatter } from "@/utils/DayFormatter";
 import { generateTimeLabels } from "@/utils/GenerateTimeLabels";
 import dayjs from "dayjs";
 import { SpaceWorkingHour } from "../SpaceCard/SpaceCardDashboard";
+import { downloadReport, getReport, ReportResponseBody } from "@/api/report";
 
 export type UserPieChartType = "User Type" | "Faculty";
 
@@ -55,7 +55,7 @@ export default function DashboardChart({
   useEffect(() => {
     const fetchReport = async () => {
       try {
-        const reports = await ReportService.getReport(spaceId);
+        const reports = await getReport(spaceId);
 
         //Number of user
         const numOfUserDay: NumberOfUserChartData[] = [];
@@ -72,7 +72,7 @@ export default function DashboardChart({
         const roomLabels: string[] = [];
         const roomData: number[] = [];
 
-        reports.forEach((report) => {
+        reports.forEach((report:ReportResponseBody) => {
           const day_index = openingDay.findIndex(
             (day) => day == DayFormatter(report.start_datetime)
           );
@@ -173,7 +173,7 @@ export default function DashboardChart({
           </div>
           <DownloadReportButton
             onClick={async () => {
-              await ReportService.downloadReport(spaceId);
+              await downloadReport(spaceId);
             }}
           />
         </div>

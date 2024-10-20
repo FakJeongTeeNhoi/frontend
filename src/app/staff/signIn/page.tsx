@@ -20,6 +20,7 @@ export default function SignIn() {
     };
 
     try {
+      console.log(loginData);
       const result = await signIn("credentials", {
         ...loginData,
         redirect: false,
@@ -28,7 +29,7 @@ export default function SignIn() {
       if (result?.error) {
         console.error("SignIn failed");
       } else {
-        router.push("/staff/signUp");
+        router.push("/staff/spaceManagement");
       }
     } catch (error: unknown) {
       console.error("Login error:", error);
