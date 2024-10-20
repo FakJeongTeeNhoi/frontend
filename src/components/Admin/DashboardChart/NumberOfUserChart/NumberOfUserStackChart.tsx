@@ -18,18 +18,7 @@ export default function NumberOfUserStackChart({
   numberOfUserLabels: string[];
   numberOfUserSeries: NumberOfUserChartData[];
 }) {
-  const [series, setSeries] = useState([
-    {
-      name: "Student",
-      data: [44, 55, 41, 67, 22],
-
-    },
-    {
-      name: "Professor",
-      data: [13, 23, 20, 8, 13],
-  
-    },
-  ]);
+  const [series, setSeries] = useState<NumberOfUserChartData[]>([]);
 
   const [options, setOptions] = useState<ApexOptions>({
     chart: {
@@ -76,7 +65,7 @@ export default function NumberOfUserStackChart({
     },
     xaxis: {
       type: "category",
-      categories: numberOfUserLabels,
+      categories: [],
       labels: {
         show: true,
         style: {

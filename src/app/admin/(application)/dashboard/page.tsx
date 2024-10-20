@@ -13,7 +13,7 @@ import DashboardChart from "@/components/Admin/DashboardChart/DashboardChart";
 export default function Dashboard() {
   //mock getSpaceById data
   const space = {
-    spaceId: "e44a7bca-8d4f-4171-9bb2-3d803c1e72f4",
+    spaceId: "85e7760a-6269-4f73-b160-a9efd73413e1",
     name: "Engineering Library",
     description: "Good facility loud noise, hot air conditioner",
     workingHours: { startTime: "8.00", endTime: "18.00" },

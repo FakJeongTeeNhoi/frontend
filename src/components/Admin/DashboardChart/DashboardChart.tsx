@@ -56,6 +56,7 @@ export default function DashboardChart({
     const fetchReport = async () => {
       try {
         const reports = await ReportService.getReport(spaceId);
+
         //Number of user
         const numOfUserDay: NumberOfUserChartData[] = [];
         //Type of user
@@ -97,19 +98,19 @@ export default function DashboardChart({
 
           //Find room
           const room_pos = roomLabels.findIndex(
-            (room) => room == report.room_id
+            (room) => room == report.room_name
           );
           if (room_pos != -1) {
             roomData[room_pos] += 1;
           } else {
-            roomLabels.push(report.room_id);
+            roomLabels.push(report.room_name);
             roomData.push(1);
           }
 
           //Find Type of User
           report.participant.forEach((participant) => {
             const type_pos = numOfUserDay.findIndex(
-              (type) => type.name == participant.type
+              (type) => type.name == participant.role
             );
             if (type_pos != -1) {
               numOfUserDay[type_pos].data[day_index] += 1;
@@ -117,8 +118,8 @@ export default function DashboardChart({
             } else {
               const initDayValue = new Array(openingDay.length).fill(0);
               initDayValue[day_index] += 1;
-              numOfUserDay.push({ name: participant.type, data: initDayValue });
-              userTypeLabels.push(participant.type);
+              numOfUserDay.push({ name: participant.role, data: initDayValue });
+              userTypeLabels.push(participant.role);
               userTypeData.push(1);
             }
             const faculty_pos = facultyLabels.findIndex(
@@ -171,8 +172,8 @@ export default function DashboardChart({
             </div>
           </div>
           <DownloadReportButton
-            onClick={() => {
-              console.log("Download Report");
+            onClick={async () => {
+              await ReportService.downloadReport(spaceId);
             }}
           />
         </div>
@@ -185,10 +186,14 @@ export default function DashboardChart({
               Number of User
             </div>
             <div className="flex-grow">
-              <NumberOfUserStackChart
-                numberOfUserLabels={openingDay}
-                numberOfUserSeries={numberOfUserSeries}
-              />
+              {numberOfUserSeries.length > 0 ? (
+                <NumberOfUserStackChart
+                  numberOfUserLabels={openingDay}
+                  numberOfUserSeries={numberOfUserSeries}
+                />
+              ) : (
+                <div></div>
+              )}
             </div>
           </div>
 
@@ -213,16 +218,20 @@ export default function DashboardChart({
               </FormControl>
             </div>
             <div className="flex-grow">
-              <TypeOfUserChart
-                seriesList={
-                  userPieChartType == "User Type"
-                    ? userTypeSeries
-                    : facultySeries
-                }
-                labelsList={
-                  userPieChartType == "User Type" ? userTypeList : facultyList
-                }
-              />
+              {userTypeSeries.length > 0 ? (
+                <TypeOfUserChart
+                  seriesList={
+                    userPieChartType == "User Type"
+                      ? userTypeSeries
+                      : facultySeries
+                  }
+                  labelsList={
+                    userPieChartType == "User Type" ? userTypeList : facultyList
+                  }
+                />
+              ) : (
+                <div></div>
+              )}
             </div>
           </div>
         </div>
@@ -233,10 +242,14 @@ export default function DashboardChart({
               Number of Reservation
             </div>
             <div className="flex-grow">
-              <NumberOfReservationChart
-                seriesList={reservationSeries}
-                labelsList={reservationLabels}
-              />
+              {reservationSeries.length > 0 ? (
+                <NumberOfReservationChart
+                  seriesList={reservationSeries}
+                  labelsList={reservationLabels}
+                />
+              ) : (
+                <div></div>
+              )}
             </div>
           </div>
 
@@ -245,7 +258,14 @@ export default function DashboardChart({
               Most Reserved Room
             </div>
             <div className="flex-grow">
-              <TypeOfUserChart seriesList={roomSeries} labelsList={roomList} />
+              {roomSeries.length > 0 ? (
+                <TypeOfUserChart
+                  seriesList={roomSeries}
+                  labelsList={roomList}
+                />
+              ) : (
+                <div></div>
+              )}
             </div>
           </div>
         </div>
