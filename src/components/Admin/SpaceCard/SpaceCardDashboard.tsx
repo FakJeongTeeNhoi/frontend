@@ -3,6 +3,7 @@ import LocationIcon from "@/components/Common/Icons/LocationIcon";
 import TimeIcon from "@/components/Common/Icons/TimeIcon";
 import Tag from "@/components/Common/Tag/Tag";
 import dayjs from "dayjs";
+import Map from "./Map";
 
 export type SpaceWorkingHour = {
   startTime: string;
@@ -25,11 +26,14 @@ export type SpaceInfo = {
   updateAt: Date;
   updateBy: string;
 };
+
 export default function SpaceCardDashboard({ space }: { space: SpaceInfo }) {
   return (
     <>
       <div className="flex flex-row w-full space-x-16 py-8 px-16 bg-gray-50 border-gray-300 border-2 rounded-md text-gray-800">
-        <div className="bg-yellow-200 w-[500px]">Google API</div>
+        <div className="bg-yellow-200 w-[500px]">
+          <Map latitude={space.latitude} longitude={space.longitude} />
+        </div>
         <div className="flex flex-col space-y-8">
           <div className="flex flex-row space-x-4 items-center">
             <div className="text-2xl font-bold">{space.name}</div>
@@ -49,7 +53,8 @@ export default function SpaceCardDashboard({ space }: { space: SpaceInfo }) {
             <div className="flex flex-row items-center space-x-2">
               <TimeIcon width={40} height={40} color="#FDE68A" />
               <div className="text-lg font-medium">
-                {space.workingHours.startTime} - {space.workingHours.endTime}, Mon - Fri
+                {space.workingHours.startTime} - {space.workingHours.endTime},
+                Mon - Fri
               </div>
             </div>
             <div>{space.description}</div>
