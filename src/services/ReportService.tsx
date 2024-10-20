@@ -19,7 +19,7 @@ type ReportResponseBody = {
 };
 
 export const ReportService = {
-  getReport: async (spaceId: string): Promise<ReportResponseBody> => {
+  getReport: async (spaceId: string): Promise<ReportResponseBody[]> => {
     const url = `${serviceConfig.reportServiceUrl}/${spaceId}`;
     const res = await fetch(url, {
       method: "GET",
@@ -29,7 +29,8 @@ export const ReportService = {
     });
 
     if (res.ok) {
-      return await res.json();
+      const data =  await res.json();
+      return data.reports;
     } else {
       throw new Error(res.statusText);
     }

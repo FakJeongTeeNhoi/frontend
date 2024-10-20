@@ -7,21 +7,30 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import SearchIcon from "@/components/Common/Icons/SearchIcon";
 import { useState } from "react";
 import FormControl from "@mui/material/FormControl";
-import SpaceCardDashboard from "@/components/Admin/SpaceCard/SpaceCardDashboard";
+import SpaceCardDashboard, { SpaceInfo } from "@/components/Admin/SpaceCard/SpaceCardDashboard";
 import DashboardChart from "@/components/Admin/DashboardChart/DashboardChart";
 
 export default function Dashboard() {
-  const breadcrumbItems = [{ label: "Dashboard", href: "/dashboard" }];
-  const [focusSpace, setSpace] = useState("");
-
-  const onSelectedSpace = (event: SelectChangeEvent) => {
-    setSpace(event.target.value);
+  //mock getSpaceById data
+  const space = {
+    spaceId: "e44a7bca-8d4f-4171-9bb2-3d803c1e72f4",
+    name: "Engineering Library",
+    description: "Good facility loud noise, hot air conditioner",
+    workingHours: { startTime: "8.00", endTime: "18.00" },
+    latitude: 1,
+    longitude: 1,
+    faculty: "Engineering",
+    floor: 3,
+    building: "Building 3",
+    isAvailable: true,
+    createAt: new Date(),
+    createBy: "John Doe",
+    updateAt: new Date(),
+    updateBy: "John Doe"
   };
 
-  //value should be space id
-
   const spaces = [
-    { value: "Engineering Library", label: "Engineering Library" },
+    { value: "e44a7bca-8d4f-4171-9bb2-3d803c1e72f4", label: "Engineering Library" },
     {
       value: "Office of Academic Resource",
       label: "Office of Academic Resource",
@@ -31,6 +40,19 @@ export default function Dashboard() {
       label: "Communication Arts Library",
     },
   ];
+  //
+
+  const breadcrumbItems = [{ label: "Dashboard", href: "/dashboard" }];
+  const [focusSpace, setSpace] = useState<SpaceInfo>(space);
+
+
+
+  const onSelectedSpace = (event: SelectChangeEvent) => {
+    const selectedSpace = spaces.find(space => space.label === event.target.value);
+    console.log(`fetched space id: ${selectedSpace?.value}`)
+    //fetch GetSpaceById
+    setSpace(space);
+  };
 
   return (
     <>
@@ -49,24 +71,24 @@ export default function Dashboard() {
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={focusSpace}
+                value={focusSpace? focusSpace.name : ""}
                 label="Age"
                 onChange={onSelectedSpace}
                 displayEmpty
                 renderValue={(selected) =>
-                  selected.length === 0 ? "Select Space" : selected
+                 !selected || selected.length === 0 ? "Select Space" : selected
                 }
               >
                 {spaces.map((space) => (
-                  <MenuItem key={space.value} value={space.value}>
+                  <MenuItem key={space.label} value={space.label}>
                     {space.label}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
           </div>
-          <SpaceCardDashboard />
-          <DashboardChart />
+          <SpaceCardDashboard space={space}/>
+          <DashboardChart spaceId={space.spaceId} openingTime={space.workingHours}/>
         </div>
       </div>
     </>

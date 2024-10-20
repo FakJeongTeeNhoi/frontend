@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 
@@ -6,21 +6,28 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-type ApexChartProps = {
-  // Define any props here if necessary
+export type NumberOfUserChartData = {
+  name: string;
+  data: number[];
 };
 
-export default function NumberOfUserStackChart() {
+export default function NumberOfUserStackChart({
+  numberOfUserLabels,
+  numberOfUserSeries,
+}: {
+  numberOfUserLabels: string[];
+  numberOfUserSeries: NumberOfUserChartData[];
+}) {
   const [series, setSeries] = useState([
     {
       name: "Student",
       data: [44, 55, 41, 67, 22],
-      color: "#58A9FB",
+
     },
     {
       name: "Professor",
       data: [13, 23, 20, 8, 13],
-      color: "#FDE68A",
+  
     },
   ]);
 
@@ -49,7 +56,7 @@ export default function NumberOfUserStackChart() {
         },
       },
     ],
-    colors: ['#58A9FB', '#FDE68A', '#34D399'], 
+    colors: ["#58A9FB", "#FDE68A", "#34D399"],
     plotOptions: {
       bar: {
         horizontal: false,
@@ -69,7 +76,7 @@ export default function NumberOfUserStackChart() {
     },
     xaxis: {
       type: "category",
-      categories: ["MON", "TUE", "WED", "THU", "FRI"],
+      categories: numberOfUserLabels,
       labels: {
         show: true,
         style: {
@@ -82,12 +89,31 @@ export default function NumberOfUserStackChart() {
     legend: {
       position: "right",
       offsetY: 40,
-      fontSize: '16px',
+      fontSize: "16px",
     },
     fill: {
       opacity: 1,
     },
   });
+
+  useEffect(() => {
+    setOptions((prevOptions) => ({
+      ...prevOptions,
+      xaxis: {
+        type: "category",
+        categories: numberOfUserLabels,
+        labels: {
+          show: true,
+          style: {
+            colors: [],
+            fontSize: "16px",
+            fontWeight: 500,
+          },
+        },
+      },
+    }));
+    setSeries(numberOfUserSeries);
+  }, [numberOfUserLabels, numberOfUserSeries]);
 
   return (
     <div>
