@@ -41,7 +41,7 @@ export default function ResetPassword() {
       if (result?.error) {
         console.error("Change password failed");
       } else {
-        router.push("/staff/signUp");
+        router.push("/staff/spaceManagement");
       }
     } catch (error: unknown) {
       console.error("Reset password error", error);
