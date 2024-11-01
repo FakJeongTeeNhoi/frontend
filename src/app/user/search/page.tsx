@@ -1,12 +1,47 @@
-'use client'
+"use client";
 
+import Breadcrumb from "@/components/Common/Breadcrumb/Breadcrumb";
 import NavbarUser from "@/components/User/NavbarUser/NavbarUser";
+import SearchBarWithFilter from "@/components/User/SearchBar/SearchBarWithFilter/SearchBarWithFilter";
+import SpaceCard from "@/components/User/SpaceCard/SpaceCard";
 
 export default function Search() {
+  const breadcrumbItems = [{ label: "Search", href: "/user/search" }];
+
+  //mock getSpaceById data
+  const space = {
+    spaceId: "85e7760a-6269-4f73-b160-a9efd73413e1",
+    name: "Engineering Library",
+    description: "Good facility loud noise, hot air conditioner",
+    workingHours: { startTime: "8.00", endTime: "18.00" },
+    latitude: 13.737032896575903,
+    longitude: 100.53316744620875,
+    faculty: "Engineering",
+    floor: 3,
+    building: "Building 3",
+    isAvailable: true,
+    createAt: new Date(),
+    createBy: "John Doe",
+    updateAt: new Date(),
+    updateBy: "John Doe",
+  };
+
+  const spaceList = [space, space, space, space];
+
   return (
     <>
       <NavbarUser username={"mock"} role={"student"} focus="Search" />
-      <div>Search Page</div>
+      <div className="flex flex-col py-16 px-32">
+        <div className="flex flex-row justify-between items-center w-full">
+          <Breadcrumb items={breadcrumbItems} />
+        </div>
+        <SearchBarWithFilter />
+        <div className="grid grid-cols-2 gap-x-32 gap-y-8 w-full mt-16">
+          {spaceList.map((space,index) => (
+            <SpaceCard space={space} key={index}/>
+          ))}
+        </div>
+      </div>
     </>
   );
 }
