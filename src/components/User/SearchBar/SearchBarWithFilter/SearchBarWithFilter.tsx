@@ -1,17 +1,19 @@
+import { getSpace } from "@/api/space";
 import TextInput from "@/app/staff/signUp/components/TextInput";
 import DatePickerInput from "@/components/Common/DatePicker/DatePickerInput";
 import Dropdown from "@/components/Common/Dropdown/Dropdown";
 import SearchIcon from "@/components/Common/Icons/SearchIcon";
 import { NumberInput } from "@/components/Common/NumberInput/NumberInput";
 import TimePickerInput from "@/components/Common/TimePicker/TimePickerInput";
+import { SpaceInfo } from "@/components/Staff/SpaceCard/SpaceCardDashboard";
 import { combineDateAndTime } from "@/utils/CombineDateAndTime";
 import { getCurrentLocation } from "@/utils/GetCurrentLocation";
 import { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
 
-type Pair<T, U> = [T, U];
+export type Pair<T, U> = [T, U];
 
-export default function SearchBarWithFilter() {
+export default function SearchBarWithFilter({onSearchChange} : {onSearchChange: (value:SpaceInfo[]) => void}) {
   //mock
   const facultyList = [
     {
@@ -28,6 +30,26 @@ export default function SearchBarWithFilter() {
       label: "Communication Arts Library",
     },
   ];
+  //mock getSpaceById data
+  const mockSpace = {
+    spaceId: "85e7760a-6269-4f73-b160-a9efd73413e1",
+    name: "Engineering Library",
+    description: "Good facility loud noise, hot air conditioner",
+    workingHours: { startTime: "8.00", endTime: "18.00" },
+    latitude: 13.737032896575903,
+    longitude: 100.53316744620875,
+    faculty: "Engineering",
+    floor: 3,
+    building: "Building 3",
+    isAvailable: true,
+    createAt: new Date(),
+    createBy: "John Doe",
+    updateAt: new Date(),
+    updateBy: "John Doe",
+  };
+
+  const mockSpaceList = [mockSpace, mockSpace, mockSpace, mockSpace];
+  //
 
   const [name, setName] = useState("");
   const [faculty, setFaculty] = useState("");
@@ -79,7 +101,7 @@ export default function SearchBarWithFilter() {
     };
   }
 
-  const onSearch = () => {
+  const onSearch = async () => {
     const start_datetime = combineDateAndTime(reservedDate, reservedTime[0]);
     const end_datetime = combineDateAndTime(reservedDate, reservedTime[1]);
 
@@ -94,8 +116,12 @@ export default function SearchBarWithFilter() {
       latitude_range: location ? location.latitude_range : null,
       longitude_range: location ? location.longitude_range : null,
     };
-    console.log("Search Params");
     console.log(searchParams);
+
+    // const response = await getSpace(searchParams);
+    const response = mockSpaceList;
+    onSearchChange(response);
+  
   };
 
   const onTimeChanged = (value: Dayjs | null, isStartTime: boolean) => {

@@ -55,7 +55,12 @@ export default function SpaceCard({ space }: { space: SpacePreviewInfo }) {
         </div>
       </div>
       <div>
-        <button className="bg-blue-400 text-white flex flex-row items-center justify-items-center px-4 py-1 rounded space-x-3 hover:bg-blue-500">
+        <button
+          className="bg-blue-400 text-white flex flex-row items-center justify-items-center px-4 py-1 rounded space-x-3 hover:bg-blue-500"
+          onClick={() => {
+            window.location.href = `/user/search/${space.spaceId}`;
+          }}
+        >
           <Icon
             icon="lets-icons:view"
             className="text-[#FFFFFF] size-5 my-auto"
