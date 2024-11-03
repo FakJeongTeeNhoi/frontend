@@ -4,35 +4,48 @@ import { useState } from "react";
 import TextInput from "./components/TextInput";
 import PasswordInput from "./components/PasswordInput";
 import SelectInput from "./components/SelectInput";
+import { register } from "@/api/auth";
+import { useRouter } from "next/navigation";
 
 export default function SignUp() {
+  const router = useRouter();
+
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [id, setId] = useState<string>("");
   const [faculty, setFaculty] = useState<string>("");
+  const [role, setRole] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [rePassword, setRePassword] = useState<string>("");
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const signUpData = {
-      firstName,
-      lastName,
-      email,
-      id,
-      faculty,
-      password,
-      rePassword,
-      role: "user",
-    };
+    if (password !== rePassword) {
+      alert("Password and Re-Password do not match");
+      return;
+    }
 
+    const signUpData = {
+      email,
+      password,
+      name: `${firstName} ${lastName}`,
+      faculty,
+      type: "user",
+      role,
+      user_id: id,
+    };
     try {
-      console.log("Sign Up Data: ", signUpData);
-      window.location.href = "/user/verifyEmail";
+      const result = await register(signUpData);
+      if (result?.error) {
+        console.error(result.error);
+      } else {
+        console.log("Sign Up Data: ", signUpData);
+        router.push("/user/verifyEmail");
+      }
     } catch (error: unknown) {
-      console.error(error);
+      console.error("Register error", error);
     }
   };
 
@@ -83,6 +96,14 @@ export default function SignUp() {
                 placeholder="Faculty"
                 value={faculty}
                 onChange={setFaculty}
+              />
+              <SelectInput
+                id="role"
+                label="Role"
+                placeholder="Role"
+                value={role}
+                onChange={setRole}
+                isRole
               />
             </div>
             <div className="grid gap-8 px-2 pb-8 pt-2 rounded-[10px] border-b-2 border-gray-300 items-center">

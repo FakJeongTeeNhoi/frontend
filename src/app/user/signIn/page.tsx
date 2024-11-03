@@ -3,24 +3,37 @@
 import Image from "next/image";
 import { useState } from "react";
 import shapes from "../../../assets/SignIn/shapes.svg";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function SignIn() {
+  const router = useRouter();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const loginData = {
       email,
       password,
+      type: "user",
     };
 
     try {
-      console.log("Login Data: ", loginData);
-      window.location.href = "/user/signUp";
+      console.log(loginData);
+      const result = await signIn("credentials", {
+        ...loginData,
+        redirect: false,
+      });
+      console.log(result);
+      if (result?.error) {
+        console.error("SignIn failed");
+      } else {
+        router.push("/user/search");
+      }
     } catch (error: unknown) {
-      console.error(error);
+      console.error("Login error:", error);
     }
   };
 
@@ -71,6 +84,15 @@ export default function SignIn() {
             >
               Sign In
             </button>
+            <p className="text-black">
+              Don't have an account?{" "}
+              <span
+                className="text-blue-400 cursor-pointer"
+                onClick={() => router.push("/user/signUp")}
+              >
+                Sign Up
+              </span>
+            </p>
           </form>
         </div>
 

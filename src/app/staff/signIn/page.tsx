@@ -17,6 +17,7 @@ export default function SignIn() {
     const loginData = {
       email,
       password,
+      type: "staff",
     };
 
     try {

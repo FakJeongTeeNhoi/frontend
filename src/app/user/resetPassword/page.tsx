@@ -8,6 +8,7 @@ import { changePassword } from "@/api/auth";
 import ConfirmationModal from "./components/ConfirmModal";
 import SuccessModal from "./components/SuccessModal";
 import NavbarAdmin from "@/components/Staff/NavbarAdmin/NavbarAdmin";
+import NavbarUser from "@/components/User/NavbarUser/NavbarUser";
 
 export default function ResetPassword() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function ResetPassword() {
   const { data: session } = useSession();
   const user = session ? session.user : null;
   if (user == null) {
-    router.push("/staff/signIn");
+    router.push("/user/signIn");
   }
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -72,10 +73,10 @@ export default function ResetPassword() {
     <>
       {user ? (
         <>
-          <NavbarAdmin
+          <NavbarUser
             username={user.name}
-            role={user.type}
-            focus="Dashboard"
+            role={user.role || "User"}
+            focus="Search"
           />
           <div className="min-w-fit h-screen min-h-fit bg-blue-50 flex justify-center items-center">
             <div className="w-[45%] min-w-fit m-auto space-y-[7%]">
@@ -123,7 +124,7 @@ export default function ResetPassword() {
                     <button
                       type="button" // Change this to "button" to avoid form submission
                       className="text-gray-400 bg-white border border-gray-400 hover:text-[#3758F9] hover:border-[#D1D5DB] font-medium rounded-md h-12 py-3 px-7 w-44"
-                      onClick={() => router.push("/staff/spaceManagement")}
+                      onClick={() => router.push("/user/search")}
                     >
                       Skip for now
                     </button>

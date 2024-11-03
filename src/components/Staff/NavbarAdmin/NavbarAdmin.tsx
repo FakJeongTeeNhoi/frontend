@@ -2,6 +2,7 @@ import Image from "next/image";
 import DefaultButton from "../../Common/Buttons/DefaultButton";
 import AccountBox from "../../Common/AccountBox/AccountBox";
 import { signOut } from "next-auth/react";
+import { logout } from "@/api/auth";
 
 export type AdminPage = "Dashboard" | "Request" | "Space Management";
 export default function NavbarAdmin({
@@ -45,10 +46,11 @@ export default function NavbarAdmin({
           </div>
 
           <div className="flex flex-row justify-items-center items-center space-x-12">
-            <AccountBox username={username} role={role} pageType={"Staff"}/>
+            <AccountBox username={username} role={role} pageType={"Staff"} />
             <DefaultButton
               label="Log out"
               onClick={() => {
+                logout();
                 signOut({ callbackUrl: "/staff/signIn" });
               }}
             />

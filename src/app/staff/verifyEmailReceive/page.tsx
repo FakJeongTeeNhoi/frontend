@@ -32,7 +32,7 @@ export default function VerifyEmail() {
 
   return (
     <div className="min-w-fit h-screen min-h-fit bg-blue-50 flex justify-center items-center">
-      <div className="grid bg-white mt-[14%] mx-auto w-[75%] h-[86%] min-h-fit shadow-signIn text-center gap-[6%] py-10 px-4">
+      <div className="grid bg-white mt-[1%] mx-auto w-[75%] h-[86%] min-h-fit shadow-signIn text-center gap-[6%] py-10 px-4">
         <Image src={icon} alt="Email Verification Icon" className="mx-auto" />
         <div className="grid gap-[19%]">
           <div>

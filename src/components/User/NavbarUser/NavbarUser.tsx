@@ -2,6 +2,7 @@ import Image from "next/image";
 import DefaultButton from "../../Common/Buttons/DefaultButton";
 import { signOut } from "next-auth/react";
 import AccountBox from "@/components/Common/AccountBox/AccountBox";
+import { logout } from "@/api/auth";
 
 export type UserPage = "Search" | "My Reservation";
 export default function NavbarUser({
@@ -44,10 +45,11 @@ export default function NavbarUser({
           </div>
 
           <div className="flex flex-row justify-items-center items-center space-x-12">
-            <AccountBox username={username} role={role} pageType={"User"}/>
+            <AccountBox username={username} role={role} pageType={"User"} />
             <DefaultButton
               label="Log out"
               onClick={() => {
+                logout();
                 signOut({ callbackUrl: "/user/signIn" });
               }}
             />

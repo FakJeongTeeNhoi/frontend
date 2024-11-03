@@ -1,11 +1,12 @@
 import axios from "axios";
+import { getSession } from "next-auth/react";
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL_USER;
 
-export async function login(email: string, password: string) {
+export async function login(email: string, password: string, type: string) {
   try {
     const response = await axios.post(
-      `${backendUrl}/api/auth/login?type=staff`,
+      `${backendUrl}/api/auth/login?type=${type}`,
       {
         email,
         password,
@@ -25,30 +26,54 @@ export async function register({
   name,
   faculty,
   type,
+  role,
+  user_id,
 }: {
   email: string;
   password: string;
   name: string;
   faculty: string;
   type: string;
+  role?: string;
+  user_id?: string;
 }) {
   console.log(email, password, name, faculty, type);
-  console.log("PATH", `${backendUrl}/api/auth/register?type=staff`);
-  try {
-    const response = await axios.post(
-      `${backendUrl}/api/auth/register?type=staff`,
-      {
-        email,
-        password,
-        name,
-        faculty,
-        type,
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Register error:", error);
-    throw error;
+  if (type === "staff") {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/auth/register?type=${type}`,
+        {
+          email,
+          password,
+          name,
+          faculty,
+          type,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Register error:", error);
+      throw error;
+    }
+  } else {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/auth/register?type=${type}`,
+        {
+          email,
+          password,
+          name,
+          faculty,
+          type,
+          role,
+          user_id,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Register error:", error);
+      throw error;
+    }
   }
 }
 
@@ -87,6 +112,26 @@ export async function changePassword(
     return response.data;
   } catch (error) {
     console.error("Change password error:", error);
+    throw error;
+  }
+}
+
+export async function logout() {
+  const session = await getSession(); // Get the session
+  const token = session?.token;
+  try {
+    const response = await axios.post(
+      `${backendUrl}/api/auth/logout`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Logout error:", error);
     throw error;
   }
 }

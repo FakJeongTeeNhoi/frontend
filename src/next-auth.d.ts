@@ -9,6 +9,8 @@ declare module "next-auth" {
       faculty: string;
       name: string;
       type: string;
+      role?: string;
+      user_id?: string;
     };
     token: string;
   }
@@ -21,6 +23,8 @@ declare module "next-auth" {
     name: string;
     type: string;
     token: string;
+    role?: string;
+    user_id?: string;
   }
 
   interface JWT {
@@ -31,5 +35,7 @@ declare module "next-auth" {
     name: string;
     type: string;
     token: string;
+    role?: string;
+    user_id?: string;
   }
 }
