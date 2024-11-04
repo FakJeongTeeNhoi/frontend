@@ -1,44 +1,67 @@
 "use client";
 
-import { getAllSpace } from "@/api/space";
+import { getAllSpace, GetRoomData, GetSpaceData } from "@/api/space";
 import Breadcrumb from "@/components/Common/Breadcrumb/Breadcrumb";
-import { SpaceInfo } from "@/components/Staff/SpaceCard/SpaceCardDashboard";
 import NavbarUser from "@/components/User/NavbarUser/NavbarUser";
 import SearchBarWithFilter from "@/components/User/SearchBar/SearchBarWithFilter/SearchBarWithFilter";
 import SpaceCard from "@/components/User/SpaceCard/SpaceCard";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+export type SpaceData = {
+  spaceId: string;
+  name: string;
+  description: string;
+  workingHours: string[];
+  opening_day: string[];
+  latitude: number;
+  longitude: number;
+  faculty: string;
+  faculty_access_list: string[];
+  floor: number;
+  building: string;
+  isAvailable: boolean;
+  createAt: Date;
+  createBy: string;
+  updateAt: Date;
+  updateBy: string;
+  room_list: GetRoomData[];
+};
+
 export default function Search() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const breadcrumbItems = [{ label: "Search", href: "/user/search" }];
-  const [spaceList, setSpaceList] = useState<SpaceInfo[]>();
-
-  //mock getSpaceById data
-  const mockSpace = {
-    spaceId: "85e7760a-6269-4f73-b160-a9efd73413e1",
-    name: "Engineering Library",
-    description: "Good facility loud noise, hot air conditioner",
-    workingHours: { startTime: "8.00", endTime: "18.00" },
-    latitude: 13.737032896575903,
-    longitude: 100.53316744620875,
-    faculty: "Engineering",
-    floor: 3,
-    building: "Building 3",
-    isAvailable: true,
-    createAt: new Date(),
-    createBy: "John Doe",
-    updateAt: new Date(),
-    updateBy: "John Doe",
-  };
-
-  const mockSpaceList = [mockSpace, mockSpace, mockSpace, mockSpace];
-  //
+  const [spaceList, setSpaceList] = useState<SpaceData[]>();
 
   useEffect(() => {
     const fetchSpace = async () => {
       try {
-        const testSpaces = await getAllSpace();
-        console.log(testSpaces);
-        const spaces = mockSpaceList;
+        const data = await getAllSpace();
+       
+        const spaces: SpaceData[] = [];
+        data.forEach((space: GetSpaceData) => {
+          spaces.push({
+            spaceId: space.ID.toString(),
+            name: space.name,
+            description: space.description,
+            workingHours: space.working_hour,
+            latitude: space.latitude,
+            longitude: space.longitude,
+            faculty: space.faculty,
+            floor: space.floor,
+            building: space.building,
+            isAvailable: space.is_available,
+            createAt: new Date(space.CreatedAt),
+            createBy: "",
+            updateAt: new Date(space.UpdatedAt),
+            updateBy: "",
+            opening_day: space.opening_day,
+            faculty_access_list: space.faculty_access_list,
+            room_list: space.room_list,
+          });
+        });
+        
         setSpaceList(spaces);
       } catch (err) {
         console.error(err);
@@ -58,7 +81,13 @@ export default function Search() {
         {spaceList ? (
           <div className="grid grid-cols-2 gap-x-32 gap-y-8 w-full mt-16">
             {spaceList.map((space, index) => (
-              <SpaceCard space={space} key={index} />
+              <SpaceCard
+                space={space}
+                key={index}
+                onView={() => {
+                  router.push(`/user/search/${space.spaceId}`);
+                }}
+              />
             ))}
           </div>
         ) : (

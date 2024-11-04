@@ -1,8 +1,10 @@
+import { SpaceData } from "@/app/user/search/page";
 import LocationIcon from "@/components/Common/Icons/LocationIcon";
 import TimeIcon from "@/components/Common/Icons/TimeIcon";
 import Tag from "@/components/Common/Tag/Tag";
 import Map from "@/components/Staff/SpaceCard/Map";
 import { SpaceWorkingHour } from "@/components/Staff/SpaceCard/SpaceCardDashboard";
+import { formatOpeningDay } from "@/utils/FormatOpeningDay";
 import { Icon } from "@iconify/react";
 
 export type SpacePreviewInfo = {
@@ -17,7 +19,11 @@ export type SpacePreviewInfo = {
   building: string;
   isAvailable: boolean;
 };
-export default function SpaceCard({ space }: { space: SpacePreviewInfo }) {
+export default function SpaceCard({ space, onView }: { space: SpaceData, onView: () => void }) {
+ 
+  const today = new Date();
+  const dayIndex = today.getDay();
+
   return (
     <div className="flex flex-row space-x-8 py-8 px-4 bg-gray-50 border-gray-300 border-2 rounded-md text-gray-800 justify-between">
       <div className="flex flex-col space-y-2">
@@ -47,8 +53,8 @@ export default function SpaceCard({ space }: { space: SpacePreviewInfo }) {
           <div className="flex flex-row items-center space-x-2">
             <TimeIcon width={30} height={30} color="#FDE68A" />
             <div className="text-lg font-medium">
-              {space.workingHours.startTime} - {space.workingHours.endTime}, Mon
-              - Fri
+              {space.workingHours[dayIndex]},{" "}
+              {formatOpeningDay(space.opening_day)}
             </div>
           </div>
           <div>{space.description}</div>
@@ -57,9 +63,7 @@ export default function SpaceCard({ space }: { space: SpacePreviewInfo }) {
       <div>
         <button
           className="bg-blue-400 text-white flex flex-row items-center justify-items-center px-4 py-1 rounded space-x-3 hover:bg-blue-500"
-          onClick={() => {
-            window.location.href = `/user/search/${space.spaceId}`;
-          }}
+          onClick={onView}
         >
           <Icon
             icon="lets-icons:view"

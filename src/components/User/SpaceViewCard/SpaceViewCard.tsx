@@ -1,11 +1,15 @@
+import { SpaceData } from "@/app/user/search/page";
 import LocationIcon from "@/components/Common/Icons/LocationIcon";
 import TimeIcon from "@/components/Common/Icons/TimeIcon";
 import Tag from "@/components/Common/Tag/Tag";
 import Map from "@/components/Staff/SpaceCard/Map";
-import { SpaceInfo } from "@/components/Staff/SpaceCard/SpaceCardDashboard";
+import { formatOpeningDay } from "@/utils/FormatOpeningDay";
 import dayjs from "dayjs";
 
-export default function SpaceViewCard({ space }: { space: SpaceInfo }) {
+export default function SpaceViewCard({ space }: { space: SpaceData }) {
+  const today = new Date();
+  const dayIndex = today.getDay();
+
   return (
     <>
       <div className="flex flex-row w-full space-x-16 py-8 px-16 bg-gray-50 border-gray-300 border-2 rounded-md text-gray-800">
@@ -38,8 +42,8 @@ export default function SpaceViewCard({ space }: { space: SpaceInfo }) {
               <div className="flex flex-row items-center space-x-2">
                 <TimeIcon width={40} height={40} color="#FDE68A" />
                 <div className="text-lg font-medium">
-                  {space.workingHours.startTime} - {space.workingHours.endTime},
-                  Mon - Fri
+                  {space.workingHours[dayIndex]},{" "}
+                  {formatOpeningDay(space.opening_day)}
                 </div>
               </div>
               <div>{space.description}</div>
@@ -47,12 +51,10 @@ export default function SpaceViewCard({ space }: { space: SpaceInfo }) {
           </div>
           <div className="flex flex-col w-full items-end">
             <div className="text-gray-500">
-              Created At: {dayjs(space.createAt).format("HH:mm MM-DD-YYYY")} By:{" "}
-              {space.createBy}
+              Created At: {dayjs(space.createAt).format("HH:mm MM-DD-YYYY")} 
             </div>
             <div className="text-gray-500">
-              Updated At: {dayjs(space.updateAt).format("HH:mm MM-DD-YYYY")} By:{" "}
-              {space.updateBy}
+              Updated At: {dayjs(space.updateAt).format("HH:mm MM-DD-YYYY")} 
             </div>
           </div>
         </div>

@@ -1,16 +1,20 @@
 "use client";
-import { getSpaceById } from "@/api/space";
+import { GetRoomData, getSpaceById } from "@/api/space";
 import Breadcrumb from "@/components/Common/Breadcrumb/Breadcrumb";
 import Table from "@/components/Common/Table/Table";
 import NavbarUser from "@/components/User/NavbarUser/NavbarUser";
 import SpaceViewCard from "@/components/User/SpaceViewCard/SpaceViewCard";
 import { useEffect, useState } from "react";
+import { SpaceData } from "../page";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export type RoomDataType = {
+  id: string;
   name: string;
   description: string;
   capacity: number;
   minRequired: number;
+  is_available: boolean;
 };
 
 export type SpaceDataType = {
@@ -37,55 +41,47 @@ export default function View({ params }: { params: { spaceId: string } }) {
     { label: "View", href: `/user/search/${params.spaceId}` },
   ];
 
-  const [space, setSpace] = useState<SpaceDataType>();
+  const [space, setSpace] = useState<SpaceData>();
 
-  //mock getSpaceById data
-  const mockRoomData = [
-    {
-      name: "Meeting Room #1",
-      description: "Room desc",
-      capacity: 10,
-      minRequired: 5,
-    },
-    {
-      name: "Meeting Room #2",
-      description: "Room desc",
-      capacity: 10,
-      minRequired: 5,
-    },
-    {
-      name: "Meeting Room #3",
-      description: "Room desc",
-      capacity: 10,
-      minRequired: 5,
-    },
-  ];
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  // How to get search params
+  // useEffect(() => {
+  //   const data = searchParams.get("room");
+  //   const roomData: GetRoomData | null = data
+  //     ? JSON.parse(decodeURIComponent(data))
+  //     : null;
 
-  const mockSpace = {
-    spaceId: "85e7760a-6269-4f73-b160-a9efd73413e1",
-    name: "Engineering Library",
-    description: "Good facility loud noise, hot air conditioner",
-    workingHours: { startTime: "8.00", endTime: "18.00" },
-    latitude: 13.737032896575903,
-    longitude: 100.53316744620875,
-    faculty: "Engineering",
-    floor: 3,
-    building: "Building 3",
-    isAvailable: true,
-    createAt: new Date(),
-    createBy: "John Doe",
-    updateAt: new Date(),
-    updateBy: "John Doe",
-    room: mockRoomData,
-  };
-  //
+  //   if (roomData) {
+  //     setRoom(roomData);
+  //   }
+  // }, [searchParams]);
 
   useEffect(() => {
     const fetchSpaceById = async () => {
       try {
-        //   const spaceData = await getSpaceById(params.spaceId)
-        const spaceData = mockSpace;
-        setSpace(spaceData);
+        const spaceData = await getSpaceById(params.spaceId);
+        const space = {
+          spaceId: spaceData.ID.toString(),
+          name: spaceData.name,
+          description: spaceData.description,
+          workingHours: spaceData.working_hour,
+          latitude: spaceData.latitude,
+          longitude: spaceData.longitude,
+          faculty: spaceData.faculty,
+          floor: spaceData.floor,
+          building: spaceData.building,
+          isAvailable: spaceData.is_available,
+          createAt: new Date(spaceData.CreatedAt),
+          createBy: "",
+          updateAt: new Date(spaceData.UpdatedAt),
+          updateBy: "",
+          opening_day: spaceData.opening_day,
+          faculty_access_list: spaceData.faculty_access_list,
+          room_list: spaceData.room_list,
+        };
+        setSpace(space);
       } catch (err) {
         console.error(err);
       }
@@ -95,7 +91,7 @@ export default function View({ params }: { params: { spaceId: string } }) {
 
   const headers = ["", "NAME", "CAPACITY", "MIN REQUIRED", ""];
 
-  const rows = (mockData: RoomDataType[]) => {
+  const rows = (mockData: GetRoomData[]) => {
     return mockData.map((data, index) => (
       <tr key={index} className="border-b border-gray-300">
         <td className="px-4 py-2 text-center font-semibold text-gray-800">
@@ -109,10 +105,18 @@ export default function View({ params }: { params: { spaceId: string } }) {
         </td>
         <td className="px-4 py-2 text-center text-gray-500">{data.capacity}</td>
         <td className="px-4 py-2 text-center text-gray-500">
-          {data.minRequired}
+          {data.min_reserve_capacity}
         </td>
         <td className="px-6 py-2 text-end">
-          <button className="border-2 border-blue-400 rounded-full text-blue-400 font-semibold px-6 py-2 hover:text-blue-500 hover:border-blue-500">
+          <button
+            className="border-2 border-blue-400 rounded-full text-blue-400 font-semibold px-6 py-2 hover:text-blue-500 hover:border-blue-500"
+            onClick={() => {
+              const params = new URLSearchParams(searchParams as any);
+              const roomString = JSON.stringify(data);
+              params.set("room", encodeURIComponent(roomString));
+              router.push(`/user/reservation?${params.toString()}`);
+            }}
+          >
             Reserve
           </button>
         </td>
@@ -134,11 +138,13 @@ export default function View({ params }: { params: { spaceId: string } }) {
               <div className="text-2xl font-semibold text-gray-800">
                 List of Room
               </div>
-              <Table headers={headers} rows={rows(space.room)} />;
+              <Table headers={headers} rows={rows(space.room_list)} />;
             </div>
           </div>
         ) : (
-          <div className="text-center w-full font-bold text-3xl mt-16">Loading ...</div>
+          <div className="text-center w-full font-bold text-3xl mt-16">
+            Loading ...
+          </div>
         )}
       </div>
     </>
