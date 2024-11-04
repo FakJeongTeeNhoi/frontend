@@ -36,7 +36,8 @@ export default function Search() {
   useEffect(() => {
     const fetchSpace = async () => {
       try {
-        // const spaces = await getAllSpace();
+        const testSpaces = await getAllSpace();
+        console.log(testSpaces);
         const spaces = mockSpaceList;
         setSpaceList(spaces);
       } catch (err) {
