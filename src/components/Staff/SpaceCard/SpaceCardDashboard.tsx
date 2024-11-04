@@ -32,7 +32,7 @@ export default function SpaceCardDashboard({ space }: { space: SpaceInfo }) {
     <>
       <div className="flex flex-row w-full space-x-16 py-8 px-16 bg-gray-50 border-gray-300 border-2 rounded-md text-gray-800">
         <div className="bg-yellow-200 w-[500px]">
-          <Map latitude={space.latitude} longitude={space.longitude} />
+          <Map latitude={space.latitude} longitude={space.longitude} width={100} height={400}/>
         </div>
         <div className="flex flex-col space-y-8">
           <div className="flex flex-row space-x-4 items-center">
