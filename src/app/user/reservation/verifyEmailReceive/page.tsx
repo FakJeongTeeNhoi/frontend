@@ -53,6 +53,7 @@ export default function VerifyEmailReceive() {
           Number(reservationId),
           Number(userId)
         );
+        setReservation(getData);
         console.log(getData);
 
         const res = await confirmParticipant(
@@ -61,19 +62,17 @@ export default function VerifyEmailReceive() {
         );
         console.log(res);
 
-        setReservation(getData);
+        // if (getData && getData.RoomId) {
+        //   const space = await getSpaceByRoomId(getData.RoomId);
+        //   setSpaceData(space);
+        setRoomName(mockRoomData.name);
+        setSpaceLocation(mockRoomData.location);
 
-        if (getData && getData.RoomId) {
-          //   const space = await getSpaceByRoomId(getData.RoomId);
-          //   setSpaceData(space);
-          setRoomName(mockRoomData.name);
-          setSpaceLocation(mockRoomData.location);
-
-          //   const room = await getRoomByRoomId(getData.RoomId);
-          //   if (room) {
-          //     setRoomName(room.name);
-          //   }
-        }
+        //   const room = await getRoomByRoomId(getData.RoomId);
+        //   if (room) {
+        //     setRoomName(room.name);
+        //   }
+        // }
       } catch (err) {
         console.error(err);
         setIsError(true);

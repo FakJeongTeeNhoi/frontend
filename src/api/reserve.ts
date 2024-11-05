@@ -40,9 +40,7 @@ export async function createReserve(userId: number, reserve: Reserve) {
       {
         headers: {
           user_id: userId,
-          //   "Content-Type": "application/json",
         },
-        // params: { user_id: userId },
       }
     );
     return response.data;
@@ -58,10 +56,8 @@ export async function getReservation(reservationId: number, userId: number) {
       `${backendUrl}/api/reserve/${reservationId}`,
       {
         headers: {
-          //   "Content-Type": "application/json",
           user_id: userId,
         },
-        // params: { user_id: userId },
       }
     );
     return response.data;

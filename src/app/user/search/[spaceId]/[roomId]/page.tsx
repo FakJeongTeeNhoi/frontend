@@ -30,7 +30,7 @@ import CancelButton from "@/components/Common/Buttons/CancelButton";
 import { createReserve, Reserve } from "@/api/reserve";
 
 import Image from "next/image";
-import addIcon from "@/assets/Reservation/gg_add.png";
+import addIcon from "../../../../../assets/Reservation/gg_add.png";
 import { combineDateAndTime } from "@/utils/CombineDateAndTime";
 
 export type ParticipantTable = {
@@ -151,7 +151,7 @@ export default function Reservation({ params }: { params: Params }) {
     userParticipant ? [userParticipant] : []
   );
   const [participantsList, setParticipantsList] = useState<number[]>(
-    user ? [user.account_id] : []
+    user ? [Number(user.user_id)] : []
   );
 
   // Modal
