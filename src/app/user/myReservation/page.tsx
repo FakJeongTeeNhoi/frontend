@@ -21,21 +21,10 @@ import {
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
-import { useState } from "react";
-
-interface Reservation {
-  ID: number;
-  CreatedAt: string;
-  UpdatedAt: string;
-  DeletedAt: string | null;
-  participants: number[];
-  pending_participants: number[];
-  status: string;
-  approver: number;
-  start_date_time: string;
-  end_date_time: string;
-  room_id: number;
-}
+import { useState, useEffect } from "react";
+import { cancelReservation, getMyReservation } from "@/api/reservation";
+import { useSession } from "next-auth/react";
+import { Reservation } from "@/api/reservation";
 
 export default function MyReservation() {
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -46,12 +35,16 @@ export default function MyReservation() {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [cancelReservationId, setCancelReservationId] = useState<number>();
   const [cancelReservationTime, setCancelReservationTime] = useState("");
-  const user_id = 6;
+
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+
+  const { data: session } = useSession();
+  const user_id = session?.user.user_id as unknown as number;
   const statusColorMap: { [key: string]: string } = {
     created: "bg-blue-400",
     pending: "bg-yellow-400",
     completed: "bg-green-400",
-    canceled: "bg-red-400",
+    cancelled: "bg-red-400",
   };
 
   const breadcrumbItems = [
@@ -87,39 +80,54 @@ export default function MyReservation() {
       setIsAllChecked(true);
     }
   };
+  if(!session) return null;
+
   //fetch data from API
-  const mockMyReservationData = {
-    count: 2,
-    reservations: [
-      {
-        ID: 5,
-        CreatedAt: "2024-11-04T14:26:31.877094Z",
-        UpdatedAt: "2024-11-04T14:26:31.877094Z",
-        DeletedAt: null,
-        participants: [6],
-        pending_participants: [6432133721],
-        status: "completed",
-        approver: 0,
-        start_date_time: "2024-11-01T19:14:43.4591922+07:00",
-        end_date_time: "2024-11-01T19:18:43.4591922+07:00",
-        room_id: 10,
-      },
-      {
-        ID: 5,
-        CreatedAt: "2024-11-04T14:26:31.877094Z",
-        UpdatedAt: "2024-11-04T14:26:31.877094Z",
-        DeletedAt: null,
-        participants: [6],
-        pending_participants: [6432133721],
-        status: "pending",
-        approver: 0,
-        start_date_time: "2024-11-01T19:14:43.4591922+07:00",
-        end_date_time: "2024-11-01T19:18:43.4591922+07:00",
-        room_id: 10,
-      },
-    ],
-    success: true,
-  };
+  useEffect(() => {
+    const fetchReservations = () => {
+        try {
+          getMyReservation(session.token).then((data) => {
+            setReservations(data.reservations);
+          });
+        } catch (error) {
+          console.error("Failed to fetch reservations:", error);
+        }
+    };
+    fetchReservations();
+  }, []);
+
+  // {
+  //   count: 2,
+  //   reservations: [
+  //     {
+  //       ID: 5,
+  //       CreatedAt: "2024-11-04T14:26:31.877094Z",
+  //       UpdatedAt: "2024-11-04T14:26:31.877094Z",
+  //       DeletedAt: null,
+  //       participants: [6],
+  //       pending_participants: [6432133721],
+  //       status: "completed",
+  //       approver: 0,
+  //       start_date_time: "2024-11-01T19:14:43.4591922+07:00",
+  //       end_date_time: "2024-11-01T19:18:43.4591922+07:00",
+  //       room_id: 10,
+  //     },
+  //     {
+  //       ID: 5,
+  //       CreatedAt: "2024-11-04T14:26:31.877094Z",
+  //       UpdatedAt: "2024-11-04T14:26:31.877094Z",
+  //       DeletedAt: null,
+  //       participants: [6],
+  //       pending_participants: [6432133721],
+  //       status: "pending",
+  //       approver: 0,
+  //       start_date_time: "2024-11-01T19:14:43.4591922+07:00",
+  //       end_date_time: "2024-11-01T19:18:43.4591922+07:00",
+  //       room_id: 10,
+  //     },
+  //   ],
+  //   success: true,
+  // };
 
   const headers = [
     "RESERVATION TIME",
@@ -132,7 +140,7 @@ export default function MyReservation() {
     "STATUS",
     "",
   ];
-  const filteredReservations = mockMyReservationData.reservations.filter(
+  const filteredReservations = reservations.filter(
     (reservation) =>
       selectedStatus === "" || reservation.status === selectedStatus
   );
@@ -178,7 +186,7 @@ export default function MyReservation() {
           </div>
         </td>
         <td className="px-4 py-2 text-center">
-          //router.push()
+         
           <button>
             <RemoveRedEyeOutlinedIcon color="primary" />
           </button>
@@ -201,7 +209,7 @@ export default function MyReservation() {
         </td>
         <td className="px-6 py-2 text-end">
           {reservation.status !== "completed" &&
-          reservation.status !== "canceled" ? (
+          reservation.status !== "cancelled" ? (
             <button
               className="border-2 border-red-400 rounded-full text-red-400 font-semibold px-6 py-2 hover:text-red-500 hover:border-red-500"
               onClick={() => handleCancelClick(reservation)}
@@ -233,13 +241,21 @@ export default function MyReservation() {
   };
   const handleConfirmCancel = () => {
     // Cancel the reservation
+    if(!session) return null;
+    if(cancelReservationId === undefined) return null;
+    try {
+      cancelReservation(cancelReservationId.toString(), session.token);
+    } catch (error) {
+      console.error("Cancel reservation error:", error);
+      throw error;
+    }
     setIsConfirmationModalOpen(false);
     setIsSuccessModalOpen(true);
   };
 
   return (
     <>
-      <NavbarUser username={"mock"} role={"student"} focus="My Reservation" />
+      <NavbarUser username={session.user.name} role={session.user.role || "Student"} focus="My Reservation" />
       <div className="flex flex-col py-16 px-32">
         <div className="flex flex-row justify-start items-center w-full gap-4">
           <Breadcrumb items={breadcrumbItems} />

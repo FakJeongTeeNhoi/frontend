@@ -1,7 +1,7 @@
 import { Pair } from "@/components/User/SearchBar/SearchBarWithFilter/SearchBarWithFilter";
 import axios from "axios";
 
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL_SPACE;
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export type SearchParams = {
   name: string | null;
@@ -15,7 +15,7 @@ export type SearchParams = {
 
 export async function getAllSpace() {
   try {
-    const response = await axios.get(`${backendUrl}/api/space`);
+    const response = await axios.get(`${backendUrl}/space/space`);
     return response.data;
   } catch (error) {
     console.error("Get spaces error:", error);
@@ -24,7 +24,7 @@ export async function getAllSpace() {
 }
 export async function getSpace(searchParams: SearchParams) {
   try {
-    const response = await axios.get(`${backendUrl}/api/space`, {
+    const response = await axios.get(`${backendUrl}/space/space`, {
       params: searchParams,
     });
 
@@ -36,7 +36,7 @@ export async function getSpace(searchParams: SearchParams) {
 }
 export async function getSpaceById(spaceId: string) {
   try {
-    const response = await axios.get(`${backendUrl}/api/space/${spaceId}`);
+    const response = await axios.get(`${backendUrl}/space/space/${spaceId}`);
     return response.data;
   } catch (error) {
     console.error("Get space error:", error);
