@@ -111,14 +111,14 @@ export default function Reservation({ params }: { params: Params }) {
       name: "Meeting Room #2",
       description: "Room desc",
       capacity: 10,
-      minRequired: 5,
+      minRequired: 2,
     },
     {
       roomId: 3,
       name: "Meeting Room #3",
       description: "Room desc",
       capacity: 10,
-      minRequired: 5,
+      minRequired: 2,
     },
   ];
 
@@ -223,13 +223,6 @@ export default function Reservation({ params }: { params: Params }) {
             startTime
           )?.toISOString();
           const endDateTime = combineDateAndTime(date, endTime)?.toISOString();
-          console.log({
-            user_id: user.user_id,
-            pending_participants: participantsList,
-            start_date_time: startDateTime,
-            end_date_time: endDateTime,
-            room_id: room?.roomId,
-          });
 
           await createReserve(Number(user.user_id), {
             pending_participants: participantsList,

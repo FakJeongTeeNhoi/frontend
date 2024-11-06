@@ -71,6 +71,13 @@ const mockUser = (): User[] => [
     faculty: "Engineering",
     type: "User",
   },
+  {
+    name: "test name",
+    userId: 6431315421,
+    email: "6431315421@student.chula.ac.th",
+    faculty: "Engineering",
+    type: "User",
+  },
 ];
 
 export type AddOverlayProps = {
