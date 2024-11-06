@@ -10,13 +10,17 @@ export type Reserve = {
 };
 
 export type Reservation = {
-  Participants: number[];
-  PendingParticipants: number[];
-  Status: string;
-  Approver: number;
-  StartDateTime: string;
-  EndDateTime: string;
-  RoomId: number;
+  ID: string;
+  CreatedAt: string;
+  DeletedAt: string | null;
+  UpdatedAt: string;
+  participants: number[];
+  pending_participants: number[];
+  status: string;
+  approver: number;
+  start_date_time: string;
+  end_date_time: string;
+  room_id: number;
 };
 
 export type GetRoomData = {
@@ -36,7 +40,12 @@ export async function createReserve(userId: number, reserve: Reserve) {
   try {
     const response = await axios.post(
       `${backendUrl}/api/reserve`,
-      { reserve },
+      {
+        pending_participants: reserve.pending_participants,
+        start_date_time: reserve.start_date_time,
+        end_date_time: reserve.end_date_time,
+        room_id: reserve.room_id,
+      },
       {
         headers: {
           user_id: userId,
@@ -45,12 +54,19 @@ export async function createReserve(userId: number, reserve: Reserve) {
     );
     return response.data;
   } catch (error) {
-    console.error("Create reservation error:", error);
     throw error;
   }
 }
 
-export async function getReservation(reservationId: number, userId: number) {
+interface ReservationResponse {
+  reservation: Reservation;
+  success: boolean;
+}
+
+export async function getReservation(
+  reservationId: number,
+  userId: number
+): Promise<Reservation | null> {
   try {
     const response = await axios.get(
       `${backendUrl}/api/reserve/${reservationId}`,
@@ -60,10 +76,10 @@ export async function getReservation(reservationId: number, userId: number) {
         },
       }
     );
-    return response.data;
+    const { reservation } = response.data;
+    return reservation;
   } catch (error: any) {
-    console.error(error.message);
-    throw new Error("Error fetching reservation data. Please try again.");
+    throw error;
   }
 }
 
@@ -110,7 +126,6 @@ export async function confirmParticipant(
     });
     return response.data;
   } catch (error) {
-    console.error("Get reservation error:", error);
     throw error;
   }
 }

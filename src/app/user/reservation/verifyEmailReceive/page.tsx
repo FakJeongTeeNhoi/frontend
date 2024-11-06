@@ -1,14 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import dayjs from "dayjs";
-import {
-  getReservation,
-  confirmParticipant,
-  // getSpaceByRoomId,
-  Reservation,
-  //   getRoomByRoomId,
-} from "@/api/reserve";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+import { getReservation, confirmParticipant, Reservation } from "@/api/reserve";
 import { GetSpaceData } from "@/api/space";
 
 import Image from "next/image";
@@ -22,20 +19,23 @@ export default function VerifyEmailReceive() {
 
   const [isError, setIsError] = useState(false);
   const [reservation, setReservation] = useState<Reservation>();
-  const [spaceData, setSpaceData] = useState<GetSpaceData | null>(null);
   const [roomName, setRoomName] = useState("");
   const [spaceLocation, setSpaceLocation] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
 
   const formatReservationTime = (
     startDateTime: string,
     endDateTime: string
   ) => {
-    const start = dayjs(startDateTime);
-    const end = dayjs(endDateTime);
+    const start = dayjs(startDateTime).tz("Asia/Bangkok");
+    const end = dayjs(endDateTime).tz("Asia/Bangkok");
 
-    // Format the dates and times
     const formattedDate = start.format("MM/DD/YYYY");
-    const formattedTime = `${start.format("HH:mm")}-${end.format("HH:mm")}`;
+    const formattedTime = `${start.format("HH:mm")} - ${end.format("HH:mm")}`;
 
     return `${formattedDate} ${formattedTime}`;
   };
@@ -45,41 +45,41 @@ export default function VerifyEmailReceive() {
     name: "Meeting #1",
     location: "Faculty of Engineering Building 3, Floor 3",
   };
+
+  // Prevents `fetchData` from running twice in development
+  const hasFetchedData = useRef(false);
+
   useEffect(() => {
     const fetchData = async () => {
-      console.log(userId, reservationId);
       try {
-        const getData = await getReservation(
-          Number(reservationId),
-          Number(userId)
-        );
-        setReservation(getData);
-        console.log(getData);
-
         const res = await confirmParticipant(
           Number(reservationId),
           Number(userId)
         );
-        console.log(res);
 
-        // if (getData && getData.RoomId) {
-        //   const space = await getSpaceByRoomId(getData.RoomId);
-        //   setSpaceData(space);
+        const getData = await getReservation(
+          Number(reservationId),
+          Number(userId)
+        );
+        if (getData) {
+          setReservation(getData);
+          setStartTime(getData.start_date_time);
+          setEndTime(getData.end_date_time);
+        }
+
         setRoomName(mockRoomData.name);
         setSpaceLocation(mockRoomData.location);
-
-        //   const room = await getRoomByRoomId(getData.RoomId);
-        //   if (room) {
-        //     setRoomName(room.name);
-        //   }
-        // }
       } catch (err) {
         console.error(err);
         setIsError(true);
       }
     };
-    fetchData();
-  }, [reservationId, userId]);
+
+    if (!hasFetchedData.current) {
+      fetchData();
+      hasFetchedData.current = true;
+    }
+  }, []);
 
   const handleContinue = () => {
     const token = localStorage.getItem("token");
@@ -89,7 +89,7 @@ export default function VerifyEmailReceive() {
   return (
     <div className="min-w-fit h-screen min-h-fit bg-blue-50 flex justify-center items-center">
       {isError ? (
-        <div className="grid bg-white mt-[14%] mx-auto w-[75%] h-[86%] min-h-fit text-center gap-[6%] py-10 px-4 rounded-t-xl">
+        <div className="grid bg-white mt-[14%] mx-auto w-[75%] min-w-fit h-[86%] min-h-fit text-center gap-[6%] py-10 px-4 rounded-t-xl">
           <div className="space-y-7 place-content-center">
             <Image
               src={failConfirm}
@@ -109,7 +109,7 @@ export default function VerifyEmailReceive() {
         </div>
       ) : (
         reservation && (
-          <div className="grid bg-white mt-[14%] mx-auto w-[75%] h-[86%] min-h-fit text-center gap-[6%] py-10 px-4 rounded-t-xl">
+          <div className="grid bg-white mt-[14%] mx-auto w-[75%] min-w-fit h-[86%] min-h-fit text-center gap-[6%] py-10 px-4 rounded-t-xl">
             <Image
               src={successConfirm}
               alt="Email Verification Icon"
@@ -148,10 +148,7 @@ export default function VerifyEmailReceive() {
                 <tr>
                   <td>Reservation Time:</td>
                   <td className="pl-8">
-                    {formatReservationTime(
-                      reservation.StartDateTime,
-                      reservation.EndDateTime
-                    )}
+                    {formatReservationTime(startTime, endTime)}
                   </td>
                 </tr>
               </tbody>
