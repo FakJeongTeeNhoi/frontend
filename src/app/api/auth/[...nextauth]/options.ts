@@ -10,6 +10,7 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
         token: { label: "Token", type: "text" },
+        type: { label: "Type", type: "text" },
       },
       async authorize(credentials) {
         if (credentials?.token) {
@@ -21,7 +22,11 @@ export const authOptions: NextAuthOptions = {
             };
           }
         } else if (credentials?.email && credentials?.password) {
-          const response = await login(credentials.email, credentials.password);
+          const response = await login(
+            credentials.email,
+            credentials.password,
+            credentials.type
+          );
           if (response?.success) {
             return {
               token: response.token,
@@ -48,6 +53,8 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           type: user.type,
           token: user.token,
+          role: user.role,
+          user_id: user.user_id,
         };
       }
       return token;
@@ -60,6 +67,8 @@ export const authOptions: NextAuthOptions = {
         faculty: token.faculty as string,
         name: token.name as string,
         type: token.type as string,
+        role: token.role as string,
+        user_id: token.user_id as string,
       };
       session.token = token.token as string;
       return session;

@@ -6,6 +6,7 @@ interface SelectProps {
   label: string;
   placeholder: string;
   value: string;
+  isRole?: boolean;
   onChange: (value: string) => void; // Correctly defined
 }
 
@@ -15,14 +16,23 @@ const options = [
   { label: "Science", value: "Science" },
 ];
 
+const roleOptions = [
+  { label: "Student", value: "Student" },
+  { label: "Professor", value: "Professor" },
+  { label: "Staff", value: "Staff" },
+];
+
 const SelectInput: React.FC<SelectProps> = ({
   id,
   label,
   placeholder,
   value,
   onChange,
+  isRole = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const selectedOptions = isRole ? roleOptions : options;
 
   const handleOptionClick = (optionValue: string) => {
     onChange(optionValue); // Call the onChange with the selected value
@@ -56,12 +66,12 @@ const SelectInput: React.FC<SelectProps> = ({
         >
           <div
             className={` grow ${
-              options.find((option) => option.value === value)
+              selectedOptions.find((option) => option.value === value)
                 ? "text-[#637381]"
                 : "text-[#9CA3AF]"
             }`}
           >
-            {options.find((option) => option.value === value)?.label ||
+            {selectedOptions.find((option) => option.value === value)?.label ||
               placeholder}
           </div>
           <Icon
@@ -71,8 +81,8 @@ const SelectInput: React.FC<SelectProps> = ({
         </div>
 
         {isOpen && (
-          <ul className="mt-2 absolute w-full border border-[#DFE4EA] bg-white rounded-md shadow-select z-10 py-2">
-            {options.map((option) => (
+          <ul className="mt-2 absolute w-full border border-[#DFE4EA] bg-white rounded-md shadow-select z-30 py-2">
+            {selectedOptions.map((option) => (
               <li
                 key={option.value}
                 className="p-2 text-[#637381] hover:bg-blue-400 hover:text-white focus:bg-[#60A5FA] cursor-pointer"
