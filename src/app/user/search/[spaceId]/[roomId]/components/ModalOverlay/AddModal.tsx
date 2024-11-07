@@ -5,80 +5,7 @@ import { useEffect, useState } from "react";
 import { FormControl, Autocomplete, TextField, Paper } from "@mui/material";
 import SearchIcon from "@/components/Common/Icons/SearchIcon";
 import CancelButton from "@/components/Common/Buttons/CancelButton";
-
-interface User {
-  userId: number;
-  name: string;
-  email: string;
-  faculty: string;
-  type: string;
-}
-
-const mockUser = (): User[] => [
-  {
-    name: "AA B",
-    userId: 333,
-    email: "AA@gmail.com",
-    faculty: "Engineering",
-    type: "User",
-  },
-  {
-    name: "CC B",
-    userId: 444,
-    email: "AA@gmail.com",
-    faculty: "Engineering",
-    type: "User",
-  },
-  {
-    name: "DD B",
-    userId: 555,
-    email: "AA@gmail.com",
-    faculty: "Engineering",
-    type: "User",
-  },
-  {
-    name: "EE B",
-    userId: 666,
-    email: "AA@gmail.com",
-    faculty: "Engineering",
-    type: "User",
-  },
-  {
-    name: "FF B",
-    userId: 777,
-    email: "AA@gmail.com",
-    faculty: "Engineering",
-    type: "User",
-  },
-  {
-    name: "GG B",
-    userId: 888,
-    email: "AA@gmail.com",
-    faculty: "Engineering",
-    type: "User",
-  },
-  {
-    name: "HH B",
-    userId: 999,
-    email: "AA@gmail.com",
-    faculty: "Engineering",
-    type: "User",
-  },
-  {
-    name: "test name",
-    userId: 6431316621,
-    email: "naphatwaree@gmail.com",
-    faculty: "Engineering",
-    type: "User",
-  },
-  {
-    name: "test name",
-    userId: 6431315421,
-    email: "6431315421@student.chula.ac.th",
-    faculty: "Engineering",
-    type: "User",
-  },
-];
+import { getUsers, User } from "@/api/user";
 
 export type AddOverlayProps = {
   id: string;
@@ -95,6 +22,23 @@ export function AddOverlay({
 }) {
   const { id, onClose, onConfirm } = addProps;
   const [focusUser, setFocusUser] = useState<User | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        // setLoading(true);
+        const users = await getUsers();
+        setUsers(users);
+        console.log(users);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     const $modalElement = document.querySelector(`#add-modal-${id}`);
@@ -151,7 +95,7 @@ export function AddOverlay({
                       }}
                     />
                   )}
-                  options={mockUser()}
+                  options={users}
                   getOptionLabel={(option) =>
                     `${option.userId} - ${option.name}`
                   }

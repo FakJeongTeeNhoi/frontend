@@ -80,16 +80,6 @@ export default function Reservation({ params }: { params: Params }) {
   const { spaceId, roomId: roomIdString } = params;
   const roomId = roomIdString ? parseInt(roomIdString, 10) : undefined;
 
-  const userParticipant = user
-    ? {
-        userId: Number(user.user_id),
-        email: user.email,
-        faculty: user.faculty,
-        name: user.name,
-        type: user.type,
-      }
-    : null;
-
   //breadcrumb
   const breadcrumbItems = [
     { label: "Search", href: "/user/search" },
@@ -147,12 +137,8 @@ export default function Reservation({ params }: { params: Params }) {
   const [startTime, setStartTime] = useState<Dayjs>(dayjs().hour(8).minute(0));
   const [endTime, setEndTime] = useState<Dayjs>(dayjs().hour(16).minute(0));
 
-  const [participants, setParticipants] = useState<ParticipantTable[]>(
-    userParticipant ? [userParticipant] : []
-  );
-  const [participantsList, setParticipantsList] = useState<number[]>(
-    user ? [Number(user.user_id)] : []
-  );
+  const [participants, setParticipants] = useState<ParticipantTable[]>([]);
+  const [participantsList, setParticipantsList] = useState<number[]>([]);
 
   // Modal
   const [isConfirmVisible, setConfirmVisible] = useState(false);
@@ -163,19 +149,34 @@ export default function Reservation({ params }: { params: Params }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchSpaceById = async () => {
-      try {
-        const spaceData = mockSpace;
-        const roomData = mockRoomData.find((room) => room.roomId === roomId);
-        setSpace(spaceData);
-        setRoom(roomData);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchSpaceById();
-  }, [roomId]);
+    if (user) {
+      const fetchSpaceById = async () => {
+        try {
+          const spaceData = mockSpace;
+          const roomData = mockRoomData.find((room) => room.roomId === roomId);
 
+          setSpace(spaceData);
+          setRoom(roomData);
+
+          // Set user to participants
+          setParticipants([
+            {
+              userId: Number(user.user_id),
+              email: user.email,
+              faculty: user.faculty,
+              name: user.name,
+              type: user.type,
+            },
+          ]);
+          setParticipantsList([Number(user.user_id)]);
+        } catch (err) {
+          console.error(err);
+          setError("Failed to load space or room data.");
+        }
+      };
+      fetchSpaceById();
+    }
+  }, [roomId, user]);
   // check validation
   const OnSubmit = () => {
     if (!room?.roomId) {
@@ -257,29 +258,39 @@ export default function Reservation({ params }: { params: Params }) {
     onConfirm: async (user) => {
       try {
         if (user) {
-          const userExists = participants.some(
-            (participant) => participant.userId === user.userId
-          );
+          setParticipants((prevParticipants) => {
+            const userExists = prevParticipants.some(
+              (participant) => participant.userId === user.userId
+            );
 
-          if (!userExists) {
-            setParticipants((prev) => [
-              ...prev,
-              {
-                userId: user.userId,
-                account_type: "user",
+            if (!userExists) {
+              // Add new participant if they do not exist
+              return [
+                ...prevParticipants,
+                {
+                  userId: user.userId,
+                  account_type: "user",
+                  name: user.name,
+                  email: user.email,
+                  faculty: user.faculty,
+                  type: user.type,
+                },
+              ];
+            } else {
+              console.log("User already added");
+              return prevParticipants;
+            }
+          });
 
-                name: user.name,
-                email: user.email,
-                faculty: user.faculty,
-                type: user.type,
-              },
-            ]);
-
-            setParticipantsList((prev) => [...prev, user.userId]);
-          } else {
-            console.log("User already added");
-          }
+          setParticipantsList((prevList) => {
+            if (!prevList.includes(user.userId)) {
+              return [...prevList, user.userId];
+            }
+            return prevList;
+          });
         }
+        console.log(participants);
+        console.log(participantsList);
         setAddVisible(false);
       } catch (error) {
         console.error(error);
