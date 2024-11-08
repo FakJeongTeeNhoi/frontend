@@ -27,7 +27,7 @@ import {
   AddOverlayProps,
 } from "./components/ModalOverlay/AddModal";
 import CancelButton from "@/components/Common/Buttons/CancelButton";
-import { createReserve, Reserve } from "@/api/reserve";
+import { Reserve } from "@/api/reserve";
 
 import Image from "next/image";
 import addIcon from "@/assets/Reservation/gg_add.png";
@@ -245,7 +245,7 @@ export default function Reservation({ params }: { params: Params }) {
   const AddProps: AddOverlayProps = {
     id: "add-participant",
     onClose: () => setAddVisible(false),
-    onConfirm: async (user) => {
+    onConfirm: async (user: any) => {
       try {
         if (user) {
           setParticipants((prevParticipants) => {
