@@ -59,7 +59,7 @@ export default function SearchBarWithFilter({
     };
     fetchCurrentLocation();
   }, []);
-  
+
   function calculateBoundingBox(rangeInKm: number) {
     if (!currentLocation) {
       return null;
