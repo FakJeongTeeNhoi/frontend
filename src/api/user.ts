@@ -13,7 +13,7 @@ export interface User {
 
 export interface UpdateUser {
   account_id: number;
-  user_id: string;
+  user_id?: string;
   name: string;
   faculty: string;
   type: string;
@@ -48,6 +48,23 @@ export async function updateUser(
       faculty: user.faculty,
       type: user.type,
       role: user.role,
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Update user error: ", error);
+    return { success: false };
+  }
+}
+
+export async function updateStaff(
+  user: UpdateUser
+): Promise<{ success: boolean }> {
+  try {
+    const response = await axios.put(`${backendUrl}/api/staff`, {
+      id: user.account_id,
+      name: user.name,
+      faculty: user.faculty,
+      type: user.type,
     });
     return { success: true };
   } catch (error) {
