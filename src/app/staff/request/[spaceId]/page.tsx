@@ -212,6 +212,8 @@ export default function Reservation({ params }: { params: Params }) {
           )?.toISOString();
           const endDateTime = combineDateAndTime(date, endTime)?.toISOString();
 
+          // add create reservation here
+
           console.log(Number(user.user_id), {
             pending_participants: participantsList,
             start_date_time: startDateTime,
