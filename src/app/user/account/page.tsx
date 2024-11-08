@@ -8,7 +8,7 @@ import TextInput from "./components/TextInput";
 import DefaultButton from "@/components/Common/Buttons/DefaultButton";
 import { updateUser, UpdateUser } from "@/api/user";
 
-export default function Search() {
+export default function Account() {
   const { data: session } = useSession();
   const user = session ? session.user : null;
   const router = useRouter();
