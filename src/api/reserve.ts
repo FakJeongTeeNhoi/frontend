@@ -39,7 +39,7 @@ export type GetRoomData = {
 export async function createReserve(userId: number, reserve: Reserve) {
   try {
     const response = await axios.post(
-      `${backendUrl}/api/reserve`,
+      `${backendUrl}/reserve/reserve`,
       {
         pending_participants: reserve.pending_participants,
         start_date_time: reserve.start_date_time,
@@ -69,7 +69,7 @@ export async function getReservation(
 ): Promise<Reservation | null> {
   try {
     const response = await axios.get(
-      `${backendUrl}/api/reserve/${reservationId}`,
+      `${backendUrl}/reserve/reserve/${reservationId}`,
       {
         headers: {
           user_id: userId,
@@ -120,7 +120,7 @@ export async function confirmParticipant(
   userId: number
 ) {
   try {
-    const response = await axios.put(`${backendUrl}/api/reserve/confirm`, {
+    const response = await axios.put(`${backendUrl}/reserve/reserve/confirm`, {
       reservation_id: reservationId,
       user_id: userId,
     });

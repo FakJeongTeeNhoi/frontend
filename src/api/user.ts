@@ -13,7 +13,7 @@ export interface User {
 
 export async function getUsers(): Promise<User[]> {
   try {
-    const response = await axios.get(`${backendUrl}/api/user`);
+    const response = await axios.get(`${backendUrl}/user/user`);
 
     return response.data.users.map((user: any) => ({
       userId: Number(user.user_id),
