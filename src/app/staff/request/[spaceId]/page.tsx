@@ -150,6 +150,7 @@ export default function Reservation({ params }: { params: Params }) {
     if (user) {
       const fetchSpaceById = async () => {
         try {
+          // add get space data and room data here
           const spaceData = mockSpace;
           const roomData = mockRoomData.find((room) => room.roomId);
 
