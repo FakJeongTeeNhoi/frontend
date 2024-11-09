@@ -60,6 +60,7 @@ export async function getAllSpace() {
 export async function getSpace(searchParams: SearchParams) {
   try {
     const response = await axios.get(`${backendUrl}/space/space/search`, {
+
       params: searchParams,
     });
 
