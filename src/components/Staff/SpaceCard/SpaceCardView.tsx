@@ -48,7 +48,11 @@ export default function SpaceCardView({ space }: { space: SpaceInfo }) {
         <div className="flex flex-col space-y-8 grow">
           <div className="flex flex-row space-x-4 items-center">
             <div className="text-2xl font-bold">{space.name}</div>
-            <ToggleButton id={Number(space.spaceId)} onToggle={onToggle} />
+            <ToggleButton
+              id={Number(space.spaceId)}
+              initialChecked={!space.isAvailable}
+              onToggle={onToggle}
+            />
           </div>
 
           <div className="flex flex-col space-y-2 w-full">
