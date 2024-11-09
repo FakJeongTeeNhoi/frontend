@@ -22,7 +22,7 @@ export interface UpdateUser {
 
 export async function getUsers(): Promise<User[]> {
   try {
-    const response = await axios.get(`${backendUrl}/api/user`);
+    const response = await axios.get(`${backendUrl}/user/user`);
 
     return response.data.users.map((user: any) => ({
       userId: Number(user.user_id),
@@ -41,7 +41,7 @@ export async function updateUser(
   user: UpdateUser
 ): Promise<{ success: boolean }> {
   try {
-    const response = await axios.put(`${backendUrl}/api/user`, {
+    const response = await axios.put(`${backendUrl}/user/user`, {
       id: user.account_id,
       user_id: user.user_id,
       name: user.name,
@@ -60,7 +60,7 @@ export async function updateStaff(
   user: UpdateUser
 ): Promise<{ success: boolean }> {
   try {
-    const response = await axios.put(`${backendUrl}/api/staff`, {
+    const response = await axios.put(`${backendUrl}/user/staff`, {
       id: user.account_id,
       name: user.name,
       faculty: user.faculty,
