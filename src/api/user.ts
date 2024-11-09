@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getSession } from "next-auth/react";
+import { GetSpaceData } from "./space";
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL_USER;
 
@@ -9,6 +10,23 @@ export interface User {
   email: string;
   faculty: string;
   type: string;
+}
+export interface StaffAccount {
+  ID: number;
+  CreatedAt: string;
+  UpdatedAt: string;
+  DeletedAt: string | null;
+  email: string;
+  password: string;
+  name: string;
+  faculty: string;
+  type: string;
+  is_verify: boolean;
+}
+export interface Staff {
+  account: StaffAccount;
+  account_id: number;
+  space_list: GetSpaceData[];
 }
 
 export async function getUsers(): Promise<User[]> {
