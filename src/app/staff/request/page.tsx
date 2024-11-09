@@ -16,9 +16,9 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import addIcon from "@/assets/Reservation/gg_add.png";
-import Table from "./components/Table/Table";
+import RequestTable from "./components/RequestTable/RequestTable";
 
-export interface RequestTable {
+export interface Request {
   id: number;
   CreatedAt: string;
   UpdatedAt: string;
@@ -33,7 +33,7 @@ export interface RequestTable {
 }
 
 // mock request
-const mockRequest = [
+const mockRequest: Request[] = [
   {
     id: 45,
     CreatedAt: "2024-11-07T15:28:33.342217Z",
@@ -113,6 +113,7 @@ export default function Request() {
           // get requests here
           const requestData = mockRequest;
           setRequests(requestData);
+          console.log("Requests data: ", requestData);
         } catch (err) {
           console.error(err);
         }
@@ -123,7 +124,7 @@ export default function Request() {
 
   const breadcrumbItems = [{ label: "Dashboard", href: "/staff/dashboard" }];
   const [focusSpace, setSpace] = useState<SpaceInfo>(space);
-  const [requests, setRequests] = useState<RequestTable[]>([]);
+  const [requests, setRequests] = useState<Request[]>([]);
 
   const onSelectedSpace = (event: SelectChangeEvent) => {
     const selectedSpace = spaces.find(
@@ -187,7 +188,7 @@ export default function Request() {
           </div>
           {/* Request table */}
           <div className="flex-grow">
-            <Table requests={requests} />
+            <RequestTable requests={requests} />
           </div>
         </div>
       </div>
