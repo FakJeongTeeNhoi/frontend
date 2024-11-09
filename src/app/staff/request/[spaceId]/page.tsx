@@ -238,7 +238,6 @@ export default function Reservation({ params }: { params: Params }) {
   const SuccessProps: SuccessOverlayProps = {
     id: "success-reserved",
     onClose: () => setSuccessVisible(false),
-    time: "15 minutes",
   };
 
   // add participant modal

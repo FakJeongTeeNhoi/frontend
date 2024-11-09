@@ -5,7 +5,6 @@ import { useEffect } from "react";
 export type SuccessOverlayProps = {
   id: string;
   onClose: () => void;
-  time: string;
 };
 
 export function SuccessOverlay({
@@ -15,7 +14,7 @@ export function SuccessOverlay({
   isVisible: boolean;
   successProps: SuccessOverlayProps;
 }) {
-  const { id, onClose, time } = successProps;
+  const { id, onClose } = successProps;
 
   useEffect(() => {
     const $modalElement = document.querySelector(`#success-modal-${id}`);
@@ -56,8 +55,9 @@ export function SuccessOverlay({
             </h1>
             <div className="bg-[#2578D3] rounded-md w-[90px] h-[3px] mx-auto mt-4 mb-6" />
             <label className="leading-6 text-[#637381]">
-              All participants must accept this invitation within: {time} <br />
-              You must show up within 15 minutes after reservation start time
+              All participants must accept this invitation and
+              <br />
+              show up within 15 minutes after reservation start time
             </label>
           </div>
 
