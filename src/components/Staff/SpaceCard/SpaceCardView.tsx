@@ -5,6 +5,8 @@ import dayjs from "dayjs";
 import Map from "./Map";
 import ToggleButton from "@/components/Common/Buttons/ToggleButton";
 import ButtonWithIcon from "@/components/Common/Buttons/ButtonWithIcon";
+import { DeleteOverlay, DeleteOverlayProps } from "../Modal/DeleteSpaceModal";
+import { useState } from "react";
 
 export type SpaceWorkingHour = {
   startTime: string;
@@ -34,8 +36,25 @@ export default function SpaceCardView({ space }: { space: SpaceInfo }) {
     console.log(`Change space id: ${spaceId}, checked: ${checked}`);
   };
 
+  const [isDeleteVisible, setDeleteVisible] = useState(false);
+  // confirm modal
+  const DeleteProps: DeleteOverlayProps = {
+    id: "delete-space",
+    onClose: () => setDeleteVisible(false),
+    onConfirm: async () => {
+      try {
+        // delete space
+        console.log(`delete spaceId : ${space?.spaceId}`);
+      } catch (error) {
+        console.error("Failed to create reservation:", error);
+      }
+    },
+    name: space ? space.name : "",
+  };
+
   return (
     <>
+      <DeleteOverlay isVisible={isDeleteVisible} deleteProps={DeleteProps} />
       <div className="flex flex-row w-full justify-between space-x-16 py-8 px-16 bg-gray-50 border-gray-300 border-2 rounded-md text-gray-800">
         <div className="bg-yellow-200 w-[500px]">
           <Map
@@ -87,15 +106,13 @@ export default function SpaceCardView({ space }: { space: SpaceInfo }) {
         <div className="ml-auto justify-items-end right-0 flex flex-col space-y-2">
           <ButtonWithIcon
             label="Edit"
-            onClick={() => {
-              console.log("view");
-            }}
+            onClick={() =>
+              (window.location.href = `/staff/space/space/${space.spaceId}`)
+            }
           />
           <ButtonWithIcon
             label="Delete"
-            onClick={() => {
-              console.log("view");
-            }}
+            onClick={() => setDeleteVisible(true)}
           />
         </div>
       </div>
