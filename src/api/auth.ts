@@ -1,12 +1,12 @@
 import axios from "axios";
 import { getSession } from "next-auth/react";
 
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL_USER;
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export async function login(email: string, password: string, type: string) {
   try {
     const response = await axios.post(
-      `${backendUrl}/api/auth/login?type=${type}`,
+      `${backendUrl}/user/auth/login?type=${type}`,
       {
         email,
         password,
@@ -41,7 +41,7 @@ export async function register({
   if (type === "staff") {
     try {
       const response = await axios.post(
-        `${backendUrl}/api/auth/register?type=${type}`,
+        `${backendUrl}/user/auth/register?type=${type}`,
         {
           email,
           password,
@@ -58,7 +58,7 @@ export async function register({
   } else {
     try {
       const response = await axios.post(
-        `${backendUrl}/api/auth/register?type=${type}`,
+        `${backendUrl}/user/auth/register?type=${type}`,
         {
           email,
           password,
@@ -79,7 +79,7 @@ export async function register({
 
 export async function verify(token: string) {
   try {
-    const response = await axios.get(`${backendUrl}/api/auth/verify`, {
+    const response = await axios.get(`${backendUrl}/user/auth/verify`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -98,7 +98,7 @@ export async function changePassword(
 ) {
   try {
     const response = await axios.post(
-      `${backendUrl}/api/auth/change-password`,
+      `${backendUrl}/user/auth/change-password`,
       {
         oldPassword,
         newPassword,
@@ -121,7 +121,7 @@ export async function logout() {
   const token = session?.token;
   try {
     const response = await axios.post(
-      `${backendUrl}/api/auth/logout`,
+      `${backendUrl}/user/auth/logout`,
       {},
       {
         headers: {

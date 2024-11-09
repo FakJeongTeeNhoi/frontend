@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL_REPORT;
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export type Participant = {
   role: string;
@@ -22,7 +22,7 @@ export type ReportResponseBody = {
 
 export async function getReport(spaceId: string) {
   try {
-    const response = await axios.get(`${backendUrl}/api/report/${spaceId}`);
+    const response = await axios.get(`${backendUrl}/report/report/${spaceId}`);
     return response.data.reports;
   } catch (error) {
     console.error("Login error:", error);
@@ -33,7 +33,7 @@ export async function getReport(spaceId: string) {
 export async function downloadReport(spaceId: string) {
   try {
     const response = await axios.get(
-      `${backendUrl}/api/report/download/${spaceId}`
+      `${backendUrl}/report/report/download/${spaceId}`
     );
     const blob = new Blob([response.data]);
     const downloadUrl = window.URL.createObjectURL(blob);
