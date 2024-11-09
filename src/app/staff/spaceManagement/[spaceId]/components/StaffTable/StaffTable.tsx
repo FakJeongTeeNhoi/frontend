@@ -17,6 +17,9 @@ export default function StaffTable({
     const fetchStaffs = async () => {
       try {
         setStaffs(existingStaffs);
+        if (existingStaffs.length > 0) {
+          setHeadStaffId(existingStaffs[0].ID);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -27,6 +30,7 @@ export default function StaffTable({
 
   // Modal
   const [isAddVisible, setAddVisible] = useState(false);
+  const [headStaffId, setHeadStaffId] = useState<number | null>(null);
 
   // add participant modal
   const AddProps: AddOverlayProps = {
@@ -83,6 +87,10 @@ export default function StaffTable({
     console.log(`Remove staffId: ${staffId}`);
   };
 
+  const changeHeadStaff = (staffId: number) => {
+    console.log(`change head staffId: ${staffId}`);
+  };
+
   const header = ["", "NAME", "DEPARTMENT", "ROLE", ""];
   const rows = (staffs: StaffAccount[]) => {
     return staffs.map((data, index) => (
@@ -97,7 +105,20 @@ export default function StaffTable({
           </div>
         </td>
         <td className="px-4 py-2 text-center text-gray-500">{data.faculty}</td>
-        <td className="px-4 py-2 text-center text-gray-500">{data.type}</td>
+        <td className="px-4 py-2 text-center text-gray-500 align-middle">
+          <div className="flex items-center justify-between space-x-2">
+            <span>{data.type}</span>
+            <input
+              type="radio"
+              checked={headStaffId === data.ID}
+              onChange={() => {
+                setHeadStaffId(data.ID);
+                changeHeadStaff(data.ID);
+              }}
+              className="w-5 h-5"
+            />
+          </div>
+        </td>
 
         <td className="px-6 py-2 text-end">
           <ColorButton
