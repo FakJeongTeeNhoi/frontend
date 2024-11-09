@@ -47,6 +47,7 @@ export const authOptions: NextAuthOptions = {
         token.name = session.name;
         token.account_id = session.account_id;
         token.faculty = session.faculty;
+        token.role = session.role;
         return token;
       }
 

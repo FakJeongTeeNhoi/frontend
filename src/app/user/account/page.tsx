@@ -9,7 +9,7 @@ import DefaultButton from "@/components/Common/Buttons/DefaultButton";
 import { updateUser, UpdateUser } from "@/api/user";
 
 export default function Account() {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const user = session ? session.user : null;
   const router = useRouter();
   if (user == null) {
@@ -64,7 +64,12 @@ export default function Account() {
       const response = await updateUser(updatedUserData);
 
       if (response.success) {
-        fetchUser();
+        update({
+          account_id: user.account_id,
+          name: updatedName,
+          faculty: faculty,
+          role: role,
+        });
       }
     } catch (error) {
       console.error("Failed to update user:", error);
