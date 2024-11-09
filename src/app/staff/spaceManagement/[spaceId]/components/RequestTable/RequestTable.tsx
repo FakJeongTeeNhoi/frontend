@@ -5,6 +5,9 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { Request } from "../../page";
 import Table from "@/components/Common/Table/Table";
+import { useState } from "react";
+import { SelectChangeEvent } from "@mui/material";
+import Tag from "@/components/Common/Tag/Tag";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -41,6 +44,22 @@ export default function RequestTable({
     // Add cancel here
     console.log("Cancelled request with ID:", requestId);
   };
+
+  const [selectedStatus, setSelectedStatus] = useState("");
+
+  const statusColorMap: { [key: string]: string } = {
+    created: "bg-blue-50 text-blue-400",
+    pending: "bg-yellow-100 text-yellow-600",
+    completed: "bg-green-50 text-green-400",
+    cancelled: "bg-red-50 text-red-500",
+  };
+  const onSelectedStatus = (event: SelectChangeEvent) => {
+    setSelectedStatus(event.target.value);
+  };
+
+  const filteredReservations = requests.filter(
+    (request) => selectedStatus === "" || request.status === selectedStatus
+  );
 
   const header = [
     "RESERVATION TIME",
@@ -85,7 +104,9 @@ export default function RequestTable({
         <td className="px-4 py-2 text-center text-gray-500">
           {formatDateTime(data.CreatedAt).format("HH:mm DD-MM-YYYY")}
         </td>
-        <td className="px-6 py-2 text-end">Status</td>
+        <td className="px-6 py-2 text-end">
+          <Tag label={data.status} color={statusColorMap[data.status]} />
+        </td>
         <td className="px-6 py-2 text-end">
           <ColorButton
             color="blue-400"

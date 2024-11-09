@@ -4,9 +4,7 @@ import NavbarAdmin from "@/components/Staff/NavbarAdmin/NavbarAdmin";
 import Breadcrumb from "@/components/Common/Breadcrumb/Breadcrumb";
 import { useEffect, useState } from "react";
 import SpaceCardView from "@/components/Staff/SpaceCard/SpaceCardView";
-import SpaceCardDashboard, {
-  SpaceInfo,
-} from "@/components/Staff/SpaceCard/SpaceCardDashboard";
+import { SpaceInfo } from "@/components/Staff/SpaceCard/SpaceCardDashboard";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import StaffTable from "./components/StaffTable/StaffTable";
