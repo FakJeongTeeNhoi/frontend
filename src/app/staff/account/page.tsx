@@ -10,7 +10,7 @@ import { updateStaff, UpdateUser } from "@/api/user";
 import NavbarAdmin from "@/components/Staff/NavbarAdmin/NavbarAdmin";
 
 export default function Account() {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const user = session ? session.user : null;
   const router = useRouter();
   if (user == null) {
@@ -59,7 +59,12 @@ export default function Account() {
       const response = await updateStaff(updatedUserData);
 
       if (response.success) {
-        fetchUser();
+        update({
+          account_id: user.account_id,
+          name: updatedName,
+          faculty: faculty,
+        });
+        // fetchUser();
       }
     } catch (error) {
       console.error("Failed to update user:", error);
