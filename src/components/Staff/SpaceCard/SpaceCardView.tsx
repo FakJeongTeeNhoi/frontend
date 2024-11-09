@@ -7,6 +7,7 @@ import ToggleButton from "@/components/Common/Buttons/ToggleButton";
 import ButtonWithIcon from "@/components/Common/Buttons/ButtonWithIcon";
 import { DeleteOverlay, DeleteOverlayProps } from "../Modal/DeleteSpaceModal";
 import { useState } from "react";
+import { SuccessOverlay, SuccessOverlayProps } from "../Modal/SuccessModal";
 
 export type SpaceWorkingHour = {
   startTime: string;
@@ -37,14 +38,17 @@ export default function SpaceCardView({ space }: { space: SpaceInfo }) {
   };
 
   const [isDeleteVisible, setDeleteVisible] = useState(false);
-  // confirm modal
+  const [isSuccessVisible, setSuccessVisible] = useState(false);
+  // delete modal
   const DeleteProps: DeleteOverlayProps = {
     id: "delete-space",
     onClose: () => setDeleteVisible(false),
     onConfirm: async () => {
       try {
-        // delete space
+        // delete space here
         console.log(`delete spaceId : ${space?.spaceId}`);
+        setDeleteVisible(false);
+        setSuccessVisible(true);
       } catch (error) {
         console.error("Failed to create reservation:", error);
       }
@@ -52,9 +56,21 @@ export default function SpaceCardView({ space }: { space: SpaceInfo }) {
     name: space ? space.name : "",
   };
 
+  // success modal
+  const SuccessProps: SuccessOverlayProps = {
+    id: "success-reserved",
+    onClose: () => setSuccessVisible(false),
+    header: "Deleted Space Successful",
+    text: `‘${space ? space.name : ""}’ has completely been deleted`,
+  };
+
   return (
     <>
       <DeleteOverlay isVisible={isDeleteVisible} deleteProps={DeleteProps} />
+      <SuccessOverlay
+        isVisible={isSuccessVisible}
+        successProps={SuccessProps}
+      />
       <div className="flex flex-row w-full justify-between space-x-16 py-8 px-16 bg-gray-50 border-gray-300 border-2 rounded-md text-gray-800">
         <div className="bg-yellow-200 w-[500px]">
           <Map
