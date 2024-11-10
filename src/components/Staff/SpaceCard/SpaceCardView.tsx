@@ -123,7 +123,7 @@ export default function SpaceCardView({ space }: { space: SpaceInfo }) {
           <ButtonWithIcon
             label="Edit"
             onClick={() =>
-              (window.location.href = `/staff/space/space/${space.spaceId}`)
+              (window.location.href = `/staff/createSpace/${space.spaceId}`)
             }
           />
           <ButtonWithIcon
