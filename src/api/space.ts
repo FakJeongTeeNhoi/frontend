@@ -131,12 +131,13 @@ export async function createSpace(space: SpaceCreationInfo) {
       description: space.description,
       faculty: space.faculty,
       building: space.building,
-      floor: space.floor,
-      latitude: space.latitude,
-      longitude: space.longitude,
+      floor: Number(space.floor),
+      latitude: Number(space.latitude),
+      longitude: Number(space.longitude),
       working_hour: getWorkingHour(space.startTime, space.endTime, space.openingDays),
       faculty_access_list: space.accessList,
       staff_list: space.staffs.map((staff) => staff.id),
+      head_staff: String(space.staffs[0].id),
       room_list: <Number[]>[],
     };
 
@@ -146,7 +147,7 @@ export async function createSpace(space: SpaceCreationInfo) {
       createSpaceData.room_list.push(room.id);
     }
 
-    const response = await axios.post(`${backendUrl}/space/space`, createSpaceData);
+    const response = await axios.post(`${backendUrl}/space/space/`, createSpaceData);
     return response.data.space;
   } catch (error) {
     console.error("Create space error:", error);
@@ -156,7 +157,7 @@ export async function createSpace(space: SpaceCreationInfo) {
 
 export async function createRoom(room: RoomCreationInfo) {
   try {
-    const response = await axios.post(`${backendUrl}/space/room`, {
+    const response = await axios.post(`${backendUrl}/space/room/`, {
       name: room.name,
       description: room.description,
       capacity: room.capacity,

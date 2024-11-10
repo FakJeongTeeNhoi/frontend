@@ -11,42 +11,16 @@ import { createSpace, RoomCreationInfo, SpaceCreationInfo } from "@/api/space";
 
 /* This is area for boss */
 
-const fetchStaffData = () => {
-  // Mock Data
-  // return await getStaffs();
-  return [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com",
-      faculty: "Sales",
-      type: "Manager",
-      spaceList: [1, 2],
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane@example.com",
-      faculty: "Marketing",
-      type: "Coordinator",
-      spaceList: [3],
-    },
-    {
-      id: 3,
-      name: "Alice Brown",
-      email: "alice@example.com",
-      faculty: "HR",
-      type: "Specialist",
-      spaceList: [4],
-    },
-  ];
+const fetchStaffData = async () => {
+  return await getStaffs();
 };
 
 const submitForm = async (space: SpaceCreationInfo) => {
   try {
     console.log("Creating room:", space);
     const result = await createSpace(space);
-    if (result?.id) {
+    console.log("Create space result:", result);
+    if (result?.ID) {
       return true;
     }
     return false;
@@ -112,9 +86,14 @@ export default function CreateSpace() {
 
   /* Use Effect */
   useEffect(() => {
-    const staffData = fetchStaffData();
-    setStaffList(staffData);
-    setFilteredStaff(staffData);
+    const fetchData = async () => {
+      const staffData = await fetchStaffData();
+      console.log(staffData);
+      setStaffList(staffData);
+      setFilteredStaff(staffData);
+      setSelectedStaff(staffData[0]);
+    }
+    fetchData();
   }, []);
 
   /* Handle function for currentPage */
@@ -223,6 +202,8 @@ export default function CreateSpace() {
     if (formData.staffs.includes(selectedStaff)) {
       return; // Do nothing if staff is already in the list
     }
+
+    console.log(selectedStaff);
 
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -540,6 +521,8 @@ export default function CreateSpace() {
                     </thead>
                     <tbody>
                       {formData.staffs.map((staff) => (
+                        // log staff
+                        console.log(staff),
                         <tr key={staff.id} className="text-center">
                           <td className="py-2 px-4 border-b text-left">
                             <div>{staff.name}</div>

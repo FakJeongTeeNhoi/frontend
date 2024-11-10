@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getSession } from "next-auth/react";
 
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL_USER;
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export interface Staff {
   id: number;
@@ -16,7 +16,7 @@ export async function getStaffs(): Promise<Staff[]> {
   try {
     const response = await axios.get(`${backendUrl}/user/staff`);
 
-    return response.data.users.map((staff: any) => ({
+    return response.data.staffs.map((staff: any) => ({
       spaceList: staff.space_list,
       name: staff.account.name,
       email: staff.account.email,
