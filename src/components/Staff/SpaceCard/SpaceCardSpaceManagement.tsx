@@ -102,12 +102,12 @@ export default function SpaceCard({ space }: { space: SpaceData }) {
             (window.location.href = `/staff/spaceManagement/${space.spaceId}`)
           }
         />
-        <ButtonWithIcon
+        {/* <ButtonWithIcon
           label="Edit"
           onClick={() =>
             (window.location.href = `/staff/space/space/${space.spaceId}`)
           }
-        />
+        /> */}
         <ButtonWithIcon label="Delete" onClick={() => setDeleteVisible(true)} />
       </div>
     </div>

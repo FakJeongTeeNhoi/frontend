@@ -75,7 +75,7 @@ export default function SpaceManagement() {
                 <button
                   className="cursor-pointer bg-blue-400 hover:bg-blue-500 text-white inline-flex items-center font-semibold py-2 px-6 gap-2 rounded"
                   onClick={() =>
-                    (window.location.href = "/staff/createSpaceInfo")
+                    (window.location.href = "/staff/createSpace")
                   }
                 >
                   <Image src={addIcon} alt="add" />
