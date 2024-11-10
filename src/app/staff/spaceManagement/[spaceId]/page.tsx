@@ -1,35 +1,20 @@
+// add get staffs by spaceId
+// add get rooms by spaceId
+// add get requests by spaceId
+
 "use client";
 
 import NavbarAdmin from "@/components/Staff/NavbarAdmin/NavbarAdmin";
 import Breadcrumb from "@/components/Common/Breadcrumb/Breadcrumb";
 import { useEffect, useState } from "react";
 import SpaceCardView from "@/components/Staff/SpaceCard/SpaceCardView";
-import { SpaceInfo } from "@/components/Staff/SpaceCard/SpaceCardDashboard";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import StaffTable from "./components/StaffTable/StaffTable";
 import RoomTable from "./components/RoomTable/RoomTable";
 import RequestTable from "./components/RequestTable/RequestTable";
-import { GetRoomData } from "@/api/space";
+import { GetRoomData, getSpaceById, GetSpaceData } from "@/api/space";
 import { StaffAccount } from "@/api/user";
-
-export type SpaceDataType = {
-  spaceId: string;
-  name: string;
-  description: string;
-  workingHours: { startTime: string; endTime: string };
-  latitude: number;
-  longitude: number;
-  faculty: string;
-  floor: number;
-  building: string;
-  isAvailable: boolean;
-  room: GetRoomData[];
-  createAt: Date;
-  createBy: string;
-  updateAt: Date;
-  updateBy: string;
-};
 
 export interface Request {
   id: number;
@@ -107,7 +92,7 @@ const mockRequest: Request[] = [
 const mockRoomData: GetRoomData[] = [
   {
     ID: 1,
-    name: "Meeting #1",
+    name: "Meeting",
     description: "desc",
     room_number: "1",
     capacity: 5,
@@ -119,7 +104,7 @@ const mockRoomData: GetRoomData[] = [
   },
   {
     ID: 2,
-    name: "Meeting #2",
+    name: "Meeting",
     description: "desc",
     room_number: "2",
     capacity: 5,
@@ -131,7 +116,7 @@ const mockRoomData: GetRoomData[] = [
   },
   {
     ID: 3,
-    name: "Meeting #3",
+    name: "Meeting",
     description: "desc",
     room_number: "3",
     capacity: 5,
@@ -144,22 +129,28 @@ const mockRoomData: GetRoomData[] = [
 ];
 
 // Mock space data
-const mockSpace: SpaceDataType = {
-  spaceId: "85e7760a-6269-4f73-b160-a9efd73413e1",
+const mockSpace: GetSpaceData = {
+  ID: 1,
   name: "Engineering Library",
   description: "Good facility loud noise, hot air conditioner",
-  workingHours: { startTime: "8.00", endTime: "18.00" },
+  working_hour: ["8.00 - 18.00"],
+  opening_day: [""],
   latitude: 13.737032896575903,
   longitude: 100.53316744620875,
   faculty: "Engineering",
   floor: 3,
   building: "Building 3",
-  isAvailable: true,
-  createAt: new Date(),
-  createBy: "John Doe",
-  updateAt: new Date(),
-  updateBy: "John Doe",
-  room: mockRoomData,
+  is_available: true,
+  CreatedAt: `${new Date()}`,
+  // created_by: "John Doe",
+  UpdatedAt: `${new Date()}`,
+  // updated_by: "John Doe",
+  room_list: mockRoomData,
+  head_staff: "",
+  staff_list: [17],
+  faculty_access_list: ["Engineering"],
+  DeletedAt: null,
+  type: "",
 };
 
 export default function View({ params }: { params: { spaceId: string } }) {
@@ -175,7 +166,7 @@ export default function View({ params }: { params: { spaceId: string } }) {
     { label: "View", href: `/staff/spaceManagement/${params.spaceId}` },
   ];
 
-  const [space, setSpace] = useState<SpaceInfo>();
+  const [space, setSpace] = useState<GetSpaceData>();
   const [staffs, setStaffs] = useState<StaffAccount[]>([]);
   const [requests, setRequests] = useState<Request[]>([]);
   const [rooms, setRooms] = useState<GetRoomData[]>([]);
@@ -186,23 +177,24 @@ export default function View({ params }: { params: { spaceId: string } }) {
       try {
         // Get spaceData
         const spaceData = mockSpace;
+        // const spaceData = await getSpaceById(params.spaceId);
         setSpace(spaceData);
-        console.log("Space data: ", spaceData);
+        // console.log("Space data: ", spaceData);
 
         // Get staff[]
         const staffData = mockStaff;
         setStaffs(staffData);
-        console.log("staffs data: ", staffData);
+        // console.log("staffs data: ", staffData);
 
         // Get request[]
         const requestData = mockRequest;
         setRequests(requestData);
-        console.log("Requests data: ", requestData);
+        // console.log("Requests data: ", requestData);
 
         // Get room[]
         const roomData = mockRoomData;
         setRooms(roomData);
-        console.log("Rooms data: ", roomData);
+        // console.log("Rooms data: ", roomData);
       } catch (err) {
         console.error(err);
       }

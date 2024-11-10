@@ -1,3 +1,7 @@
+// add staff to space
+// edit/add head staff to space
+// remove/add staff from space
+
 import { AddOverlay, AddOverlayProps } from "./AddStaffModal";
 import { useEffect, useState } from "react";
 import { Staff, StaffAccount } from "@/api/user";
@@ -17,9 +21,6 @@ export default function StaffTable({
     const fetchStaffs = async () => {
       try {
         setStaffs(existingStaffs);
-        if (existingStaffs.length > 0) {
-          setHeadStaffId(existingStaffs[0].ID);
-        }
       } catch (err) {
         console.error(err);
       }

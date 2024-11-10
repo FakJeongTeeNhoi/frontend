@@ -32,7 +32,7 @@ export function RoomOverlay({
       setName(editRoom.name);
       setRoomNumber(editRoom.room_number);
       setDescription(editRoom.description);
-      setCapacity(editRoom.capacity);
+      setCapacity(editRoom.capacity || 0);
       setMinCapacity(editRoom.min_reserve_capacity || 0);
     } else {
       setName("");

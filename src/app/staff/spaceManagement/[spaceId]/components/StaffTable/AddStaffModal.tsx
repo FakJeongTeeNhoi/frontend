@@ -1,3 +1,5 @@
+// get all staffs
+
 import { Modal } from "flowbite";
 import type { ModalOptions, ModalInterface } from "flowbite";
 import { useEffect, useState } from "react";

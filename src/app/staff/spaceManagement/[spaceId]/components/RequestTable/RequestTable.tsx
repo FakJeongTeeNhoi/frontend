@@ -1,3 +1,7 @@
+// approve/cancel request
+// get reserver from requestId
+// get room_name from requestId
+
 import AddButton from "@/components/Common/Buttons/AddButton";
 import ColorButton from "@/components/Common/Buttons/ColorButton";
 import dayjs from "dayjs";
@@ -21,11 +25,13 @@ export default function RequestTable({
 }) {
   // get reserver name, role, faculty
   const getReserverFromRequestId = (requestId: number) => {
+    // get reserver name, role, faculty here
     return { name: "John Doe", role: "Student", faculty: "Engineering" };
   };
 
   // get room name
   const getRoomFromRoomId = (roomId: number) => {
+    // get room name here
     return { name: "Meeting Room #1" };
   };
 
