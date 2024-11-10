@@ -1,6 +1,8 @@
+// add delete space by id
+// and also GetSpaceData doesn't have CreatedBy and UpdatedBy field
+
 import LocationIcon from "@/components/Common/Icons/LocationIcon";
 import TimeIcon from "@/components/Common/Icons/TimeIcon";
-import Tag from "@/components/Common/Tag/Tag";
 import dayjs from "dayjs";
 import Map from "./Map";
 import ToggleButton from "@/components/Common/Buttons/ToggleButton";
@@ -8,30 +10,13 @@ import ButtonWithIcon from "@/components/Common/Buttons/ButtonWithIcon";
 import { DeleteOverlay, DeleteOverlayProps } from "../Modal/DeleteSpaceModal";
 import { useState } from "react";
 import { SuccessOverlay, SuccessOverlayProps } from "../Modal/SuccessModal";
+import { GetSpaceData } from "@/api/space";
+import { formatOpeningDay } from "@/utils/FormatOpeningDay";
 
-export type SpaceWorkingHour = {
-  startTime: string;
-  endTime: string;
-};
+export default function SpaceCardView({ space }: { space: GetSpaceData }) {
+  const today = new Date();
+  const dayIndex = today.getDay();
 
-export type SpaceInfo = {
-  spaceId: string;
-  name: string;
-  description: string;
-  workingHours: SpaceWorkingHour;
-  latitude: number;
-  longitude: number;
-  faculty: string;
-  floor: number;
-  building: string;
-  isAvailable: boolean;
-  createAt: Date;
-  createBy: string;
-  updateAt: Date;
-  updateBy: string;
-};
-
-export default function SpaceCardView({ space }: { space: SpaceInfo }) {
   // set open-close for each room
   const onToggle = (spaceId: number, checked: boolean) => {
     console.log(`Change space id: ${spaceId}, checked: ${checked}`);
@@ -46,7 +31,7 @@ export default function SpaceCardView({ space }: { space: SpaceInfo }) {
     onConfirm: async () => {
       try {
         // delete space here
-        console.log(`delete spaceId : ${space?.spaceId}`);
+        console.log(`delete spaceId : ${space.ID}`);
         setDeleteVisible(false);
         setSuccessVisible(true);
       } catch (error) {
@@ -84,8 +69,8 @@ export default function SpaceCardView({ space }: { space: SpaceInfo }) {
           <div className="flex flex-row space-x-4 items-center">
             <div className="text-2xl font-bold">{space.name}</div>
             <ToggleButton
-              id={Number(space.spaceId)}
-              initialChecked={!space.isAvailable}
+              id={space.ID}
+              initialChecked={!space.is_available}
               onToggle={onToggle}
             />
           </div>
@@ -100,8 +85,8 @@ export default function SpaceCardView({ space }: { space: SpaceInfo }) {
             <div className="flex flex-row items-center space-x-2">
               <TimeIcon width={40} height={40} color="#FDE68A" />
               <div className="text-lg font-medium">
-                {space.workingHours.startTime} - {space.workingHours.endTime},
-                Mon - Fri
+                {space.working_hour[dayIndex]},{" "}
+                {formatOpeningDay(space.opening_day)}
               </div>
             </div>
             <div>{space.description}</div>
@@ -109,12 +94,12 @@ export default function SpaceCardView({ space }: { space: SpaceInfo }) {
           <div className="flex flex-row w-full space-x-32">
             <div>
               <div className="text-gray-500">
-                Created At: {dayjs(space.createAt).format("HH:mm MM-DD-YYYY")}{" "}
-                By: {space.createBy}
+                Created At: {dayjs(space.CreatedAt).format("HH:mm MM-DD-YYYY")}{" "}
+                {/* By: {space.CreatedBy} */}
               </div>
               <div className="text-gray-500">
-                Updated At: {dayjs(space.updateAt).format("HH:mm MM-DD-YYYY")}{" "}
-                By: {space.updateBy}
+                Updated At: {dayjs(space.UpdatedAt).format("HH:mm MM-DD-YYYY")}{" "}
+                {/* By: {space.UpdatedBy} */}
               </div>
             </div>
           </div>
@@ -123,7 +108,7 @@ export default function SpaceCardView({ space }: { space: SpaceInfo }) {
           <ButtonWithIcon
             label="Edit"
             onClick={() =>
-              (window.location.href = `/staff/createSpace/${space.spaceId}`)
+              (window.location.href = `/staff/createSpace/${space.ID}`)
             }
           />
           <ButtonWithIcon
