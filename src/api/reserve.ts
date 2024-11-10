@@ -1,5 +1,5 @@
 import axios from "axios";
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL_RESERVE;
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 import { GetSpaceData } from "./space";
 
 export type Reserve = {
