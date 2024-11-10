@@ -32,17 +32,8 @@ const submitForm = async (space: SpaceCreationInfo) => {
 /* End of boss area */
 
 export default function CreateSpace() {
-  /* Uncomment this in case production */
-  // const { data: session } = useSession();
-  // const user = session ? session.user : null;
-  /* End of production */
-
-  /* This part is only for development purposes */
-  const user = {
-    name: "John Doe",
-    type: "Admin",
-  };
-  /* End of development purposes */
+  const { data: session } = useSession();
+  const user = session ? session.user : null;
   const router = useRouter();
   if (user == null) {
     router.push("/staff/signIn");
@@ -92,7 +83,7 @@ export default function CreateSpace() {
       setStaffList(staffData);
       setFilteredStaff(staffData);
       setSelectedStaff(staffData[0]);
-    }
+    };
     fetchData();
   }, []);
 
@@ -520,28 +511,34 @@ export default function CreateSpace() {
                       </tr>
                     </thead>
                     <tbody>
-                      {formData.staffs.map((staff) => (
-                        // log staff
-                        console.log(staff),
-                        <tr key={staff.id} className="text-center">
-                          <td className="py-2 px-4 border-b text-left">
-                            <div>{staff.name}</div>
-                            <div>{staff.email}</div>
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {staff.faculty}
-                          </td>
-                          <td className="py-2 px-4 border-b">{staff.type}</td>
-                          <td className="py-2 px-4 border-b">
-                            <button
-                              onClick={() => handleRemoveStaff(staff.id)}
-                              className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded"
-                            >
-                              Delete
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                      {formData.staffs.map(
+                        (staff) => (
+                          // log staff
+                          console.log(staff),
+                          (
+                            <tr key={staff.id} className="text-center">
+                              <td className="py-2 px-4 border-b text-left">
+                                <div>{staff.name}</div>
+                                <div>{staff.email}</div>
+                              </td>
+                              <td className="py-2 px-4 border-b">
+                                {staff.faculty}
+                              </td>
+                              <td className="py-2 px-4 border-b">
+                                {staff.type}
+                              </td>
+                              <td className="py-2 px-4 border-b">
+                                <button
+                                  onClick={() => handleRemoveStaff(staff.id)}
+                                  className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded"
+                                >
+                                  Delete
+                                </button>
+                              </td>
+                            </tr>
+                          )
+                        )
+                      )}
                     </tbody>
                   </table>
                 </div>
