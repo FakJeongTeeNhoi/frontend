@@ -2,7 +2,7 @@ import axios from "axios";
 import { getSession } from "next-auth/react";
 import { GetSpaceData } from "./space";
 
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL_USER;
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export interface User {
   userId: number;
@@ -29,6 +29,15 @@ export interface Staff {
   space_list: GetSpaceData[];
 }
 
+export interface UpdateUser {
+  account_id: number;
+  user_id?: string;
+  name: string;
+  faculty: string;
+  type: string;
+  role?: string;
+}
+
 export async function getUsers(): Promise<User[]> {
   try {
     const response = await axios.get(`${backendUrl}/user/user`);
@@ -43,5 +52,41 @@ export async function getUsers(): Promise<User[]> {
   } catch (error) {
     console.error("Get All Users error:", error);
     throw error;
+  }
+}
+
+export async function updateUser(
+  user: UpdateUser
+): Promise<{ success: boolean }> {
+  try {
+    const response = await axios.put(`${backendUrl}/user/user`, {
+      id: user.account_id,
+      user_id: user.user_id,
+      name: user.name,
+      faculty: user.faculty,
+      type: user.type,
+      role: user.role,
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Update user error: ", error);
+    return { success: false };
+  }
+}
+
+export async function updateStaff(
+  user: UpdateUser
+): Promise<{ success: boolean }> {
+  try {
+    const response = await axios.put(`${backendUrl}/user/staff`, {
+      id: user.account_id,
+      name: user.name,
+      faculty: user.faculty,
+      type: user.type,
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Update user error: ", error);
+    return { success: false };
   }
 }
