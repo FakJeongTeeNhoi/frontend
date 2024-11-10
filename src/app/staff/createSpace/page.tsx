@@ -1,91 +1,68 @@
 "use client";
-import Breadcrumb from "@/components/Common/Breadcrumb/Breadcrumb";
 import NavbarAdmin from "@/components/Staff/NavbarAdmin/NavbarAdmin";
-import { CreateNewStaffButton } from "@/components/Staff/SpaceManagement/CreateNewStaffButton/CreateNewStaffButton";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Map from "@/components/Staff/SpaceCard/Map";
 import TimePickerInput from "@/components/Common/TimePicker/TimePickerInput";
 import dayjs, { Dayjs } from "dayjs";
-import DefaultButton from "@/components/Common/Buttons/DefaultButton";
-import { set } from "date-fns";
-import { id, se } from "date-fns/locale";
-import { create } from "domain";
+import { getStaffs, Staff } from "@/api/staff";
+import { createSpace, RoomCreationInfo, SpaceCreationInfo } from "@/api/space";
 
 /* This is area for boss */
-type Staff = {
-  id: number;
-  name: string;
-  email: string;
-  department: string;
-  role: string;
-};
-
-type Room = {
-  id: number;
-  name: string;
-  description: string;
-  capacity: number;
-  minRequire: number;
-  roomNumber: string;
-};
-
-type Space = {
-  name: string;
-  type: string;
-  description: string;
-  faculty: string;
-  building: string;
-  floor: string;
-  latitude: number;
-  longitude: number;
-  startTime: Dayjs;
-  endTime: Dayjs;
-  openingDays: string[];
-  accessList: string[];
-  staffs: Staff[];
-  rooms: Room[];
-};
 
 const fetchStaffData = () => {
   // Mock Data
+  // return await getStaffs();
   return [
     {
       id: 1,
       name: "John Doe",
       email: "john@example.com",
-      department: "Sales",
-      role: "Manager",
+      faculty: "Sales",
+      type: "Manager",
+      spaceList: [1, 2],
     },
     {
       id: 2,
       name: "Jane Smith",
       email: "jane@example.com",
-      department: "Marketing",
-      role: "Coordinator",
+      faculty: "Marketing",
+      type: "Coordinator",
+      spaceList: [3],
     },
     {
       id: 3,
       name: "Alice Brown",
       email: "alice@example.com",
-      department: "HR",
-      role: "Specialist",
+      faculty: "HR",
+      type: "Specialist",
+      spaceList: [4],
     },
   ];
 };
 
-const createSpace = async (space: Space) => {
-  console.log("Creating room:", space);
-  return true;
+const submitForm = async (space: SpaceCreationInfo) => {
+  try {
+    console.log("Creating room:", space);
+    const result = await createSpace(space);
+    if (result?.id) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Create space error:", error);
+    throw error;
+  }
 };
 /* End of boss area */
 
 export default function CreateSpace() {
   /* Uncomment this in case production */
-  //   const { data: session } = useSession();
-  //   const user = session ? session.user : null;
+  // const { data: session } = useSession();
+  // const user = session ? session.user : null;
   /* End of production */
+
   /* This part is only for development purposes */
   const user = {
     name: "John Doe",
@@ -99,7 +76,7 @@ export default function CreateSpace() {
 
   /* Use state */
   const [currentPage, setCurrentPage] = useState(0);
-  const [formData, setFormData] = useState<Space>({
+  const [formData, setFormData] = useState<SpaceCreationInfo>({
     name: "",
     type: "Co-working Space",
     description: "",
@@ -113,13 +90,13 @@ export default function CreateSpace() {
     openingDays: [] as string[],
     accessList: [] as string[],
     staffs: [] as Staff[],
-    rooms: [] as Room[],
+    rooms: [] as RoomCreationInfo[],
   });
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [filteredStaff, setFilteredStaff] = useState<Staff[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedStaff, setSelectedStaff] = useState<Staff>({} as Staff);
-  const [currentRoom, setCurrentRoom] = useState<Room>({
+  const [currentRoom, setCurrentRoom] = useState<RoomCreationInfo>({
     id: 0,
     name: "",
     description: "",
@@ -149,7 +126,7 @@ export default function CreateSpace() {
     setCurrentPage((prevPage) => prevPage - 1);
   };
 
-  const canclePage = () => {
+  const cancelPage = () => {
     router.push("/staff/spaceManagement");
   };
 
@@ -221,7 +198,7 @@ export default function CreateSpace() {
   const handleCreateSpace = async () => {
     formData.latitude = Number(formData.latitude);
     formData.longitude = Number(formData.longitude);
-    const createdSpace = await createSpace(formData);
+    const createdSpace = await submitForm(formData);
     if (createdSpace) {
       // Handle the successful creation (e.g., update state or show a success message)
       console.log("Space created successfully");
@@ -343,7 +320,7 @@ export default function CreateSpace() {
             role={user.type}
             focus="Space Management"
           />
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center text-black">
             <h1 className="text-6xl text-center font-bold mt-8">
               Create Space
             </h1>
@@ -523,10 +500,10 @@ export default function CreateSpace() {
                 {/* Button Field */}
                 <div className="flex justify-end space-x-4 mt-6">
                   <button
-                    onClick={canclePage}
+                    onClick={cancelPage}
                     className="border bg-white hover:bg-red-300 text-black font-semibold py-2 px-4 rounded"
                   >
-                    Cancle
+                    Cancel
                   </button>
                   <button
                     onClick={nextPage}
@@ -569,9 +546,9 @@ export default function CreateSpace() {
                             <div>{staff.email}</div>
                           </td>
                           <td className="py-2 px-4 border-b">
-                            {staff.department}
+                            {staff.faculty}
                           </td>
-                          <td className="py-2 px-4 border-b">{staff.role}</td>
+                          <td className="py-2 px-4 border-b">{staff.type}</td>
                           <td className="py-2 px-4 border-b">
                             <button
                               onClick={() => handleRemoveStaff(staff.id)}
@@ -588,10 +565,10 @@ export default function CreateSpace() {
                 {/* Button Field */}
                 <div className="flex justify-end space-x-4 mt-6">
                   <button
-                    onClick={canclePage}
+                    onClick={cancelPage}
                     className="border bg-white hover:bg-red-300 text-black font-semibold py-2 px-4 rounded"
                   >
-                    Cancle
+                    Cancel
                   </button>
                   <button
                     onClick={prevPage}
@@ -662,10 +639,10 @@ export default function CreateSpace() {
                 {/* Button Field */}
                 <div className="flex justify-end space-x-4 mt-6">
                   <button
-                    onClick={canclePage}
+                    onClick={cancelPage}
                     className="border bg-white hover:bg-red-300 text-black font-semibold py-2 px-4 rounded"
                   >
-                    Cancle
+                    Cancel
                   </button>
                   <button
                     onClick={prevPage}
@@ -711,7 +688,7 @@ export default function CreateSpace() {
                         onClick={() => handleSelectStaff(staff)}
                       >
                         <span>
-                          {staff.name} - {staff.role}
+                          {staff.name} - {staff.type}
                         </span>
                       </div>
                     ))}
@@ -867,7 +844,7 @@ export default function CreateSpace() {
                       }}
                       className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
                     >
-                      Cancle
+                      Cancel
                     </button>
                     <button
                       onClick={() => {
