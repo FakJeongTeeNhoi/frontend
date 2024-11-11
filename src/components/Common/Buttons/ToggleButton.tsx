@@ -19,7 +19,7 @@ export default function ToggleButton({
 
   return (
     <label className="inline-flex items-center me-5 cursor-pointer text-sm text-[#111928] font-semibold leading-6">
-      <span className="me-3">Open</span>
+      <span className="me-3">Close</span>
       <input
         type="checkbox"
         checked={isChecked}
@@ -27,7 +27,7 @@ export default function ToggleButton({
         className="sr-only peer w-[60px] h-[32px]"
       />
       <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-400"></div>
-      <span className="ms-3">Close</span>
+      <span className="ms-3">Open</span>
     </label>
   );
 }

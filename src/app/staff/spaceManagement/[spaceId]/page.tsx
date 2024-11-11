@@ -15,20 +15,8 @@ import RoomTable from "./components/RoomTable/RoomTable";
 import RequestTable from "./components/RequestTable/RequestTable";
 import { GetRoomData, getSpaceById, GetSpaceData } from "@/api/space";
 import { StaffAccount } from "@/api/user";
-
-export interface Request {
-  id: number;
-  CreatedAt: string;
-  UpdatedAt: string;
-  DeletedAt: string | null;
-  participants: Number[];
-  pending_participants: Number[];
-  status: string;
-  approver: Number;
-  start_date_time: string;
-  end_date_time: string;
-  room_id: number;
-}
+import { getStaffList } from "@/api/staff";
+import { Request, getReservationDetailByListOfRoomId} from "@/api/reservation";
 
 //mock staff
 const mockStaff: StaffAccount[] = [
@@ -157,6 +145,10 @@ export default function View({ params }: { params: { spaceId: string } }) {
   const { data: session } = useSession();
   const user = session ? session.user : null;
   const router = useRouter();
+  // const user = {
+  //   name: "admin",
+  //   type: "admin",
+  // };
   if (!user) {
     router.push("/staff/signIn");
   }
@@ -176,23 +168,25 @@ export default function View({ params }: { params: { spaceId: string } }) {
     const fetchSpaceById = async () => {
       try {
         // Get spaceData
-        const spaceData = mockSpace;
-        // const spaceData = await getSpaceById(params.spaceId);
+        // const spaceData = mockSpace;
+        const spaceData = await getSpaceById(params.spaceId);
         setSpace(spaceData);
-        // console.log("Space data: ", spaceData);
+        console.log("Space data: ", spaceData);
 
-        // Get staff[]
-        const staffData = mockStaff;
+        // Get staff[] TODO
+        // const staffData = mockStaff;
+        const staffData = await getStaffList(spaceData.staff_list);
         setStaffs(staffData);
         // console.log("staffs data: ", staffData);
 
-        // Get request[]
-        const requestData = mockRequest;
+        // Get request[] TODO
+        // const requestData = mockRequest;
+        const requestData = await getReservationDetailByListOfRoomId(spaceData.room_list);
         setRequests(requestData);
         // console.log("Requests data: ", requestData);
 
         // Get room[]
-        const roomData = mockRoomData;
+        const roomData = spaceData.room_list;
         setRooms(roomData);
         // console.log("Rooms data: ", roomData);
       } catch (err) {
@@ -205,7 +199,7 @@ export default function View({ params }: { params: { spaceId: string } }) {
 
   return (
     <>
-      {user && space ? (
+      {user && space && staffs.length > 0 && rooms.length > 0 ? (
         <>
           <NavbarAdmin
             username={user.name}
@@ -244,11 +238,11 @@ export default function View({ params }: { params: { spaceId: string } }) {
 
               <div id="default-tab-content">
                 {activeTab === "Staff" && (
-                  <StaffTable existingStaffs={staffs} />
+                  <StaffTable existingStaffs={staffs} spaceId={params.spaceId} />
                 )}
-                {activeTab === "Room" && <RoomTable existingRooms={rooms} />}
+                {activeTab === "Room" && <RoomTable spaceId={Number(params.spaceId)} existingRooms={rooms} />}
                 {activeTab === "Request" && (
-                  <RequestTable spaceId={params.spaceId} requests={requests} />
+                  <RequestTable spaceId={params.spaceId} requests={requests} rooms={rooms} token={session?.token}/>
                 )}
               </div>
             </div>

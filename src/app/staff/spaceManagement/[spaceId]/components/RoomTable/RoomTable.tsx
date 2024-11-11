@@ -4,20 +4,56 @@
 
 import AddButton from "@/components/Common/Buttons/AddButton";
 import Table from "@/components/Common/Table/Table";
-import { GetRoomData } from "@/api/space";
+import { GetRoomData, addRoomToSpace } from "@/api/space";
 import { useEffect, useMemo, useState } from "react";
 import ColorButton from "@/components/Common/Buttons/ColorButton";
 import ToggleButton from "@/components/Common/Buttons/ToggleButton";
 import { RoomOverlayProps, RoomOverlay } from "./RoomModal";
+import { createRoom, deleteRoom, updateRoom } from "@/api/room";
 
 export default function RoomTable({
+  spaceId,
   existingRooms,
 }: {
+  spaceId: number;
   existingRooms: GetRoomData[];
 }) {
   const [isAddVisible, setAddVisible] = useState(false);
   const [rooms, setRooms] = useState<GetRoomData[]>([]);
   const [editRoom, setEditRoom] = useState<GetRoomData | null>(null);
+
+  async function updateRoomLocal(room: GetRoomData) {
+    const response = await updateRoom(room);
+    console.log(response);
+    if (response) {
+      console.log(`Updated room with ID: ${room.ID}`);
+    } else {
+      console.log(`Failed to update room with ID: ${room.ID}`);
+    }
+  }
+
+  async function addRoomLocal(spaceId: number, room: GetRoomData) {
+    const roomCreation = {
+      id: 0,
+      name: room.name,
+      room_number: room.room_number,
+      description: room.description,
+      capacity: room.capacity,
+      minRequire: room.min_reserve_capacity,
+      roomNumber: room.room_number,
+    }
+    const response = await createRoom(roomCreation);
+    if (response) {
+      console.log(`Created room with ID: ${response.ID}`);
+
+      const response2 = await addRoomToSpace(spaceId, response.ID);
+
+      if (response2) {
+        console.log(`Added room with ID: ${response.ID} to space with ID: ${spaceId}`);
+        return response;
+      }
+    }
+  }
 
   useEffect(() => {
     setRooms(existingRooms);
@@ -37,9 +73,13 @@ export default function RoomTable({
           setRooms((prevRooms) => {
             if (editRoom) {
               // Edit case
+              console.log(room);
+              updateRoomLocal(room);
+
               return prevRooms.map((r) => (r.ID === room.ID ? room : r));
             } else {
               // Add case
+              addRoomLocal(spaceId,room)
               return [...prevRooms, room];
             }
           });
@@ -52,14 +92,20 @@ export default function RoomTable({
   );
 
   // Edit room
-  const Edit = (room: GetRoomData) => {
+  const Edit = async (room: GetRoomData) => {
     setEditRoom(room);
     setAddVisible(true);
   };
 
   // remove room
-  const Remove = (roomId: number) => {
+  const Remove = async (roomId: number) => {
     console.log(`Removed room with ID: ${roomId}`);
+    const response = await deleteRoom(spaceId, roomId);
+    if (response) {
+      setRooms((prevRooms) => prevRooms.filter((r) => r.ID !== roomId));
+    } else {
+      console.log(`Failed to remove room with ID: ${roomId}`);
+    }
   };
 
   // set open-close for each room

@@ -10,7 +10,7 @@ import ButtonWithIcon from "@/components/Common/Buttons/ButtonWithIcon";
 import { DeleteOverlay, DeleteOverlayProps } from "../Modal/DeleteSpaceModal";
 import { useState } from "react";
 import { SuccessOverlay, SuccessOverlayProps } from "../Modal/SuccessModal";
-import { GetSpaceData } from "@/api/space";
+import { GetSpaceData, deleteSpace } from "@/api/space";
 import { formatOpeningDay } from "@/utils/FormatOpeningDay";
 
 export default function SpaceCardView({ space }: { space: GetSpaceData }) {
@@ -32,10 +32,12 @@ export default function SpaceCardView({ space }: { space: GetSpaceData }) {
       try {
         // delete space here
         console.log(`delete spaceId : ${space.ID}`);
+        const response = await deleteSpace(String(space.ID));
+        console.log("Delete space response: ", response);
         setDeleteVisible(false);
         setSuccessVisible(true);
       } catch (error) {
-        console.error("Failed to create reservation:", error);
+        console.error("Failed to delete reservation:", error);
       }
     },
     name: space ? space.name : "",
@@ -105,16 +107,16 @@ export default function SpaceCardView({ space }: { space: GetSpaceData }) {
           </div>
         </div>
         <div className="ml-auto justify-items-end right-0 flex flex-col space-y-2">
-          <ButtonWithIcon
+          {/* <ButtonWithIcon
             label="Edit"
             onClick={() =>
               (window.location.href = `/staff/createSpace/${space.ID}`)
             }
-          />
-          <ButtonWithIcon
+          /> */}
+          {/* <ButtonWithIcon
             label="Delete"
             onClick={() => setDeleteVisible(true)}
-          />
+          /> */}
         </div>
       </div>
     </>

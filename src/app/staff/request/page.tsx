@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import addIcon from "@/assets/Reservation/gg_add.png";
 import RequestTable from "./components/RequestTable/RequestTable";
+import { getReservationDetailBySpaceId } from "@/api/reservation";
 
 export interface Request {
   id: number;
@@ -111,7 +112,7 @@ export default function Request() {
       const fetchRequestBySpaceId = async () => {
         try {
           // get requests here
-          const requestData = mockRequest;
+          const requestData = await getReservationDetailBySpaceId(space.spaceId);
           setRequests(requestData);
           console.log("Requests data: ", requestData);
         } catch (err) {
@@ -188,7 +189,7 @@ export default function Request() {
           </div>
           {/* Request table */}
           <div className="flex-grow">
-            <RequestTable requests={requests} />
+            <RequestTable requests={requests} token={session?.token}/>
           </div>
         </div>
       </div>

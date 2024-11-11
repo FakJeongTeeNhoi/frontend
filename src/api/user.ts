@@ -55,6 +55,28 @@ export async function getUsers(): Promise<User[]> {
   }
 }
 
+export async function getUserFromUserId(userId: Number): Promise<User> {
+  try {
+    // TODO: change url to get user by user id endpoint
+    const response = await axios.post(`${backendUrl}/user/user/`, {
+      user_list: [String(userId)],
+    });
+
+    const user = <User>{
+      userId: Number(response.data.user.user_id),
+      name: response.data.user.account.name,
+      email: response.data.user.account.email,
+      faculty: response.data.user.account.faculty,
+      type: response.data.user.account.type,
+    };
+
+    return user;
+  } catch (error) {
+    console.error("Get User by ID error:", error);
+    throw error;
+  }
+}
+
 export async function updateUser(
   user: UpdateUser
 ): Promise<{ success: boolean }> {

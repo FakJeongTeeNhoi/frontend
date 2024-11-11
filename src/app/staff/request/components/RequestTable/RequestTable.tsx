@@ -14,19 +14,24 @@ import Table from "@/components/Common/Table/Table";
 import { useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
 import Tag from "@/components/Common/Tag/Tag";
+import { getRoomById } from "@/api/room";
+import { getUserFromUserId } from "@/api/user";
+import { approveReservation } from "@/api/reserve";
+import { cancelReservation } from "@/api/reservation";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-export default function RequestTable({ requests }: { requests: Request[] }) {
+export default function RequestTable({ 
+  requests, token }: { requests: Request[], token: string | undefined }) {
   // get reserver name, role, faculty
-  const getReserverFromRequestId = (requestId: number) => {
-    return { name: "John Doe", role: "Student", faculty: "Engineering" };
+  const getReserverFromRequestId = async (participantId: Number) => {
+    return await getUserFromUserId(participantId);
   };
 
   // get room name
-  const getRoomFromRoomId = (roomId: number) => {
-    return { name: "Meeting Room #1" };
+  const getRoomFromRoomId = async (roomId: number) => {
+    return await getRoomById(roomId);
   };
 
   // format date
@@ -35,14 +40,26 @@ export default function RequestTable({ requests }: { requests: Request[] }) {
     return date;
   };
 
-  const onApprove = (requestId: number) => {
+  const onApprove = async (requestId: number) => {
     // Add approve here
     console.log("Approved request with ID:", requestId);
+    const response = await approveReservation(requestId, token ?? "");
+    if (response.success) {
+      console.log("Approve success");
+    } else {
+      console.log("Approve failed");
+    }
   };
 
-  const onCancel = (requestId: number) => {
-    // Add cancel here
-    console.log("Cancelled request with ID:", requestId);
+  const onCancel = async (requestId: number) => {
+    // Add cancel here; TODO: check here again
+    console.log("Canceled request with ID:", requestId);
+    const response = await cancelReservation(String(requestId), token ?? "");
+    if (response.success) {
+      console.log("Cancel success");
+    } else {
+      console.log("Cancel failed");
+    }
   };
 
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -86,16 +103,19 @@ export default function RequestTable({ requests }: { requests: Request[] }) {
         <td className="px-4 py-2 text-center">
           <div className="flex flex-col space-y-2 justify-items-center items-start">
             <div className="font-semibold text-gray-800">
-              {getReserverFromRequestId(data.id).name}
+              {String(data.participants[0])}
+            </div>
+            {/* <div className="font-semibold text-gray-800">
+              {(await getReserverFromRequestId(data.participants[0])).name}
             </div>
             <div className="font-normal text-gray-500">
-              {getReserverFromRequestId(data.id).role},{" "}
-              {getReserverFromRequestId(data.id).faculty}
-            </div>
+              {(await getReserverFromRequestId(data.participants[0])).type},{" "}
+              {(await getReserverFromRequestId(data.participants[0])).faculty}
+            </div> */}
           </div>
         </td>
         <td className="px-4 py-2 text-center text-gray-500">
-          {getRoomFromRoomId(data.room_id).name}
+          {getRoomFromRoomId(data.room_id).then((room) => room.name)}
         </td>
         <td className="px-4 py-2 text-center text-gray-500">
           {data.participants.length}/

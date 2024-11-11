@@ -7,6 +7,7 @@ import { FormControl, Autocomplete, TextField, Paper } from "@mui/material";
 import SearchIcon from "@/components/Common/Icons/SearchIcon";
 import CancelButton from "@/components/Common/Buttons/CancelButton";
 import { StaffAccount } from "@/api/user";
+import { getStaffAccounts } from "@/api/staff";
 
 const mockAllStaffs: StaffAccount[] = [
   {
@@ -80,8 +81,9 @@ export function AddOverlay({
     const fetchUsers = async () => {
       try {
         //get all staffs here
-        setAllStaffs(mockAllStaffs);
-        console.log(allStaffs);
+        const staffAccounts = await getStaffAccounts();
+        setAllStaffs(staffAccounts);
+        // console.log(allStaffs);
       } catch (err) {
         console.error(err);
       }

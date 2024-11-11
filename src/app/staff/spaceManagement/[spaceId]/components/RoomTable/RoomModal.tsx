@@ -68,8 +68,19 @@ export function RoomOverlay({
   }, [isVisible, id]);
 
   const onSubmit = () => {
-    //setRoom()
-    onConfirm(room);
+    const editedRoom = {
+      ID: room?.ID ?? 0,
+      name,
+      room_number: roomNumber,
+      description,
+      capacity,
+      min_reserve_capacity: minCapacity,
+      is_available: room?.is_available ?? false,
+      CreatedAt: room?.CreatedAt ?? "",
+      UpdatedAt: room?.UpdatedAt ?? "",
+      DeletedAt: room?.DeletedAt ?? null,
+    };
+    onConfirm(editedRoom);
   };
 
   return (

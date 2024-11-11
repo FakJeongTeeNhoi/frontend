@@ -8,11 +8,14 @@ import { Staff, StaffAccount } from "@/api/user";
 import AddButton from "@/components/Common/Buttons/AddButton";
 import ColorButton from "@/components/Common/Buttons/ColorButton";
 import Table from "@/components/Common/Table/Table";
+import { addStaffToSpace, removeStaffFromSpace } from "@/api/space";
 
 export default function StaffTable({
   existingStaffs,
+  spaceId,
 }: {
   existingStaffs: StaffAccount[];
+  spaceId: string;
 }) {
   const [staffs, setStaffs] = useState<StaffAccount[]>([]);
   const [staffsList, setStaffsList] = useState<number[]>([]);
@@ -20,6 +23,7 @@ export default function StaffTable({
   useEffect(() => {
     const fetchStaffs = async () => {
       try {
+        // console.log("existingStaffs", existingStaffs);
         setStaffs(existingStaffs);
       } catch (err) {
         console.error(err);
@@ -47,6 +51,13 @@ export default function StaffTable({
 
             if (!staffExists) {
               // Add new staff if they do not exist
+              addStaffToSpace(spaceId, user.ID).then((response) => {
+                if (response) {
+                  console.log(`Staff with ID: ${user.ID} added successfully`);
+                } else {
+                  console.log(`Failed to add staff with ID: ${user.ID}`);
+                }
+              });
               return [
                 ...prevStaffs,
                 {
@@ -84,12 +95,20 @@ export default function StaffTable({
     },
   };
 
-  const Remove = (staffId: number) => {
+  const Remove = async (staffId: number) => {
     console.log(`Remove staffId: ${staffId}`);
+    const response = await removeStaffFromSpace(spaceId, staffId);
+    if (response) {
+      setStaffs((prevStaffs) => prevStaffs.filter((staff) => staff.ID !== staffId));
+      setStaffsList((prevList) => prevList.filter((id) => id !== staffId));
+    } else {
+      console.log(`Failed to remove staff with ID: ${staffId}`);
+    };
   };
 
   const changeHeadStaff = (staffId: number) => {
     console.log(`change head staffId: ${staffId}`);
+    // TODO: NOT IMPLEMENTED
   };
 
   const header = ["", "NAME", "DEPARTMENT", "ROLE", ""];

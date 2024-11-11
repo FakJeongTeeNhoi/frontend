@@ -7,7 +7,8 @@ import Map from "@/components/Staff/SpaceCard/Map";
 import TimePickerInput from "@/components/Common/TimePicker/TimePickerInput";
 import dayjs, { Dayjs } from "dayjs";
 import { getStaffs, Staff } from "@/api/staff";
-import { createSpace, RoomCreationInfo, SpaceCreationInfo } from "@/api/space";
+import { createSpace, SpaceCreationInfo } from "@/api/space";
+import { RoomCreationInfo } from "@/api/room";
 
 /* This is area for boss */
 
@@ -194,7 +195,7 @@ export default function CreateSpace() {
       return; // Do nothing if staff is already in the list
     }
 
-    console.log(selectedStaff);
+    console.log("selected staff: ", selectedStaff);
 
     setFormData((prevFormData) => ({
       ...prevFormData,

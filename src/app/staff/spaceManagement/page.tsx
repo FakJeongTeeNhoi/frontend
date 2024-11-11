@@ -15,6 +15,10 @@ export default function SpaceManagement() {
   const { data: session } = useSession();
   const user = session ? session.user : null;
   const router = useRouter();
+  // const user = {
+  //   name: "admin",
+  //   type: "admin",
+  // }
   if (user == null) {
     router.push("/staff/signIn");
   }
@@ -26,6 +30,7 @@ export default function SpaceManagement() {
   useEffect(() => {
     const fetchSpace = async () => {
       try {
+        // TODO: change to get all space but staff only
         const data = await getAllSpace();
 
         const spaces: SpaceData[] = [];
