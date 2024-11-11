@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import SpaceCardSpaceManagement from "@/components/Staff/SpaceCard/SpaceCardSpaceManagement";
 import { SpaceData } from "@/app/user/search/page";
 import { useEffect, useState } from "react";
-import { getAllSpace, GetRoomData, GetSpaceData } from "@/api/space";
+import { getAllSpace, GetRoomData, getSpaceByStaff, GetSpaceData } from "@/api/space";
 import addIcon from "@/assets/Reservation/gg_add.png";
 import Image from "next/image";
 
@@ -31,7 +31,7 @@ export default function SpaceManagement() {
     const fetchSpace = async () => {
       try {
         // TODO: change to get all space but staff only
-        const data = await getAllSpace();
+        const data = await getSpaceByStaff(session?.token ?? "");
 
         const spaces: SpaceData[] = [];
         data.forEach((space: GetSpaceData) => {

@@ -214,3 +214,18 @@ export async function removeRoomFromSpace(spaceId: number, roomId: number) {
     throw error;
   }
 }
+
+export async function getSpaceByStaff(token: string) {
+  try {
+    // console.log("Get space by staff token:", token);
+    const response = await axios.get(`${backendUrl}/space/space/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.space;
+  } catch (error) {
+    console.error("Get space by staff error:", error);
+    throw error;
+  }
+}
