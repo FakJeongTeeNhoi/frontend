@@ -54,20 +54,20 @@ export function DeleteOverlay({
         className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full bg-gray-900/50"
       >
         <div className="modal-container bg-white opacity-100 border border-[#DFE4EA] rounded-lg px-8 py-5 space-y-11 w-fit m-auto shadow-dropShadow z-[100] text-center">
-          <div className="modal-content space-y-5">
+          <div className="modal-content">
             <Image
               src={deleteModal}
               alt="delete icon"
               className="size-[60px] mx-auto"
             />
             <h1 className="leading-8 font-semibold text-2xl">
-              Delete '{name}' ?
+              Delete <br /> '{name}' ?
             </h1>
-
-            <div className="text-sm leading-6 text-[#637381]">
+            <div className="bg-[#2578D3] rounded-md w-[90px] h-[3px] mx-auto mt-4 mb-6" />
+            <label className="text-sm leading-6 text-[#637381]">
               Deleting the space will cancel all request and remove <br />
               every room and staff from the space
-            </div>
+            </label>
           </div>
           <div className="flex flex-row space-x-4 items-center mx-auto">
             <CancelButton onClick={onClose} />

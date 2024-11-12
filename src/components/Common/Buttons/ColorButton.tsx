@@ -10,8 +10,8 @@ export default function ColorButton({
   return (
     <button
       className={`min-w-fit w-[130px] hover:text-white font-medium px-5 py-1 border text-center rounded-[50px] 
-           text-${color} border-${color} hover:bg-${color}
-        }`}
+         text-${color} border-${color} hover:bg-${color}
+      }`}
       onClick={onClick}
     >
       {label}

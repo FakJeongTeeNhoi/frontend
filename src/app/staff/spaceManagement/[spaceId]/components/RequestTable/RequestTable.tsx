@@ -1,37 +1,46 @@
-/*
-Get reserver - > name, role, faulty
-Get room name
-Add Approve(requestId) function
-Add Cancel(requestId) function
-*/
+// approve/cancel request
+// get reserver from requestId
+// get room_name from requestId
 
+import AddButton from "@/components/Common/Buttons/AddButton";
 import ColorButton from "@/components/Common/Buttons/ColorButton";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import { Request } from "../../page";
+import { Request, cancelReservation } from "@/api/reservation";
 import Table from "@/components/Common/Table/Table";
 import { useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
 import Tag from "@/components/Common/Tag/Tag";
-import { getRoomById } from "@/api/room";
-import { getUserFromUserId } from "@/api/user";
 import { approveReservation } from "@/api/reserve";
-import { cancelReservation } from "@/api/reservation";
+import { getUserFromUserId } from "@/api/user";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-export default function RequestTable({ 
-  requests, token }: { requests: Request[], token: string | undefined }) {
+export default function RequestTable({
+  spaceId,
+  requests,
+  rooms,
+  token,
+}: {
+  spaceId: string;
+  requests: Request[];
+  rooms: any;
+  token: string | undefined;
+}) {
+
   // get reserver name, role, faculty
-  const getReserverFromRequestId = async (participantId: Number) => {
+  const getReserverFromParticipantId = async (participantId: Number) => {
+    // get reserver name, role, faculty here
+    // This can be done?
     return await getUserFromUserId(participantId);
   };
 
   // get room name
-  const getRoomFromRoomId = async (roomId: number) => {
-    return await getRoomById(roomId);
+  const getRoomFromRoomId = (roomId: number) => {
+    // search for room name from roomId
+    return rooms.find((room: any) => room.ID === roomId);
   };
 
   // format date
@@ -52,7 +61,7 @@ export default function RequestTable({
   };
 
   const onCancel = async (requestId: number) => {
-    // Add cancel here; TODO: check here again
+    // Add cancel here
     console.log("Canceled request with ID:", requestId);
     const response = await cancelReservation(String(requestId), token ?? "");
     if (response.success) {
@@ -68,7 +77,7 @@ export default function RequestTable({
     created: "bg-blue-50 text-blue-400",
     pending: "bg-yellow-100 text-yellow-600",
     completed: "bg-green-50 text-green-400",
-    cancelled: "bg-red-50 text-red-500",
+    canceled: "bg-red-50 text-red-500",
   };
   const onSelectedStatus = (event: SelectChangeEvent) => {
     setSelectedStatus(event.target.value);
@@ -89,6 +98,7 @@ export default function RequestTable({
     "",
   ];
   const rows = (requests: Request[]) => {
+    console.log(requests);
     return requests.map((data, index) => (
       <tr key={index} className="border-b border-gray-300">
         <td className="px-4 py-2 text-center font-semibold text-gray-800">
@@ -106,16 +116,16 @@ export default function RequestTable({
               {String(data.participants[0])}
             </div>
             {/* <div className="font-semibold text-gray-800">
-              {(await getReserverFromRequestId(data.participants[0])).name}
+              {(await getReserverFromParticipantId(data.participants[0])).name}
             </div>
             <div className="font-normal text-gray-500">
-              {(await getReserverFromRequestId(data.participants[0])).type},{" "}
-              {(await getReserverFromRequestId(data.participants[0])).faculty}
+              {(await getReserverFromParticipantId(data.participants[0])).type},{" "}
+              {(await getReserverFromParticipantId(data.participants[0])).faculty}
             </div> */}
           </div>
         </td>
         <td className="px-4 py-2 text-center text-gray-500">
-          {getRoomFromRoomId(data.room_id).then((room) => room.name)}
+          {getRoomFromRoomId(data.room_id).name}
         </td>
         <td className="px-4 py-2 text-center text-gray-500">
           {data.participants.length}/
@@ -148,5 +158,14 @@ export default function RequestTable({
       </tr>
     ));
   };
-  return <Table headers={header} rows={rows(requests)} />;
+  return (
+    <div className="space-y-6">
+      <AddButton
+        heading="Request"
+        label="Create New Request"
+        onClick={() => (window.location.href = `/staff/request/${spaceId}`)}
+      />
+      <Table headers={header} rows={rows(requests)} />
+    </div>
+  );
 }

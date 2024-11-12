@@ -1,6 +1,5 @@
 import axios from "axios";
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-import { GetSpaceData } from "./space";
 
 export type Reserve = {
   pending_participants: number[];
@@ -23,18 +22,6 @@ export type Reservation = {
   room_id: number;
 };
 
-export type GetRoomData = {
-  ID: number;
-  name: string;
-  description: string;
-  room_number: string;
-  capacity: number;
-  min_reserve_capacity: number;
-  is_available: boolean;
-  CreatedAt: string;
-  UpdatedAt: string;
-  DeletedAt: string | null;
-};
 
 export async function createReserve(userId: number, reserve: Reserve) {
   try {
@@ -128,4 +115,26 @@ export async function confirmParticipant(
   } catch (error) {
     throw error;
   }
+}
+
+export async function approveReservation(reservationId: Number, token: string) {
+    try {
+      console.log("Approve reservation with ID:", reservationId, " token:", token);
+      const response = await axios.put(`${backendUrl}/reserve/reserve/approve/${reservationId}`, {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        }
+      );
+
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        throw new Error("Failed to approve reservation");
+      }
+    } catch (error) {
+      console.error("Approve reservation error:", error);
+      throw error;
+    }
 }

@@ -2,6 +2,7 @@ import { Pair } from "@/components/User/SearchBar/SearchBarWithFilter/SearchBarW
 import axios from "axios";
 import { Dayjs } from "dayjs";
 import { Staff } from "./staff";
+import { RoomCreationInfo, createRoom } from "./room";
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -49,15 +50,6 @@ export type GetSpaceData = {
   working_hour: string[];
   room_list: GetRoomData[];
 }
-
-export type RoomCreationInfo = {
-  id: number;
-  name: string;
-  description: string;
-  capacity: number;
-  minRequire: number;
-  roomNumber: string;
-};
 
 export type SpaceCreationInfo = {
   name: string;
@@ -111,7 +103,7 @@ export async function getSpaceById(spaceId: string) {
 
 function getWorkingHour(startTime: Dayjs, endTime: Dayjs, openingDays: string[]) {
   const workingHour = [];
-  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   for (let day of days) {
     if (openingDays.includes(day)) {
       workingHour.push(`${startTime.format("HH:mm")} - ${endTime.format("HH:mm")}`);
@@ -124,6 +116,8 @@ function getWorkingHour(startTime: Dayjs, endTime: Dayjs, openingDays: string[])
 
 export async function createSpace(space: SpaceCreationInfo) {
   try {
+
+    console.log("input for createSpace", space);
 
     const createSpaceData = {
       name: space.name,
@@ -138,14 +132,19 @@ export async function createSpace(space: SpaceCreationInfo) {
       faculty_access_list: space.accessList,
       staff_list: space.staffs.map((staff) => staff.id),
       head_staff: String(space.staffs[0].id),
-      room_list: <Number[]>[],
+      room_list: <String[]>[],
     };
+
+    console.log("createSpaceData", createSpaceData);
 
     // loop through the rooms and create a room list
     for (let room of space.rooms) {
-      room = await createRoom(room);
-      createSpaceData.room_list.push(room.id);
+      const roomResponse = await createRoom(room);
+      console.log("room", roomResponse);
+      createSpaceData.room_list.push(String(roomResponse.ID));
     }
+
+    console.log("createSpaceDataAfterRoom", createSpaceData);
 
     const response = await axios.post(`${backendUrl}/space/space/`, createSpaceData);
     return response.data.space;
@@ -155,18 +154,78 @@ export async function createSpace(space: SpaceCreationInfo) {
   }
 }
 
-export async function createRoom(room: RoomCreationInfo) {
+export async function deleteSpace(spaceId: string) {
   try {
-    const response = await axios.post(`${backendUrl}/space/room/`, {
-      name: room.name,
-      description: room.description,
-      capacity: room.capacity,
-      min_reserve_capacity: room.minRequire,
-      room_number: room.roomNumber,
-    });
-    return response.data.room;
+    const response = await axios.delete(`${backendUrl}/space/space/${spaceId}`);
+    return response.data;
   } catch (error) {
-    console.error("Create room error:", error);
+    console.error("Delete space error:", error);
+    throw error;
+  }
+}
+
+export async function removeStaffFromSpace(spaceId: string, staffId: number) {
+  try {
+    const response = await axios.post(`${backendUrl}/space/space/${spaceId}/removeStaff`, {
+      staff_id: [staffId],
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Remove staff from space error:", error);
+    throw error;
+  }
+}
+
+export async function addStaffToSpace(spaceId: string, staffId: number) {
+  try {
+    const response = await axios.post(`${backendUrl}/space/space/${spaceId}/addStaff`, {
+      staff_id: [staffId],
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Add staff to space error:", error);
+    throw error;
+  }
+}
+
+export async function addRoomToSpace(spaceId: number, roomId: number) {
+  try {
+    const response = await axios.post(`${backendUrl}/space/space/${spaceId}/addRoom`, {
+      room_list: [roomId],
+    });
+    return response.data.success;
+  } catch (error) {
+    console.error("Add room to space error:", error);
+    throw error;
+  }
+}
+
+export async function removeRoomFromSpace(spaceId: number, roomId: number) {
+  try {
+    console.log("Removing room from space", spaceId, roomId);
+    const response = await axios.post(`${backendUrl}/space/space/${spaceId}/removeRoom`, {
+      room_list: [roomId],
+    });
+    return response.data.success;
+  } catch (error) {
+    console.error("Remove room from space error:", error);
+    throw error;
+  }
+}
+
+export async function getSpaceByStaff(token: string) {
+  try {
+    // console.log("Get space by staff token:", token);
+    const response = await axios.get(`${backendUrl}/space/space/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.space;
+  } catch (error) {
+    console.error("Get space by staff error:", error);
     throw error;
   }
 }

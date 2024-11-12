@@ -44,7 +44,7 @@ export default function MyReservation() {
     created: "bg-blue-400",
     pending: "bg-yellow-400",
     completed: "bg-green-400",
-    cancelled: "bg-red-400",
+    canceled: "bg-red-400",
   };
 
   const breadcrumbItems = [
@@ -209,7 +209,7 @@ export default function MyReservation() {
         </td>
         <td className="px-6 py-2 text-end">
           {reservation.status !== "completed" &&
-          reservation.status !== "cancelled" ? (
+          reservation.status !== "canceled" ? (
             <button
               className="border-2 border-red-400 rounded-full text-red-400 font-semibold px-6 py-2 hover:text-red-500 hover:border-red-500"
               onClick={() => handleCancelClick(reservation)}
